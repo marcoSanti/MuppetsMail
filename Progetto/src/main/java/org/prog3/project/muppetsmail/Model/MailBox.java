@@ -37,8 +37,36 @@ public class MailBox implements Serializable {
     }
 
 
-    //TODO: Metodi per spostare mail da inbox / sent a deleted
+    /*
+    *This method allows to remove a message from a folder
+    * and to move it to another folder
+    */
+    public void moveTo(Mail msg, List<Mail> from, List<Mail> to){
+        from.remove(msg);
+        to.add(msg);
+    }
 
+    /*
+    * This method allows to delete messages older than days
+    * */
+
+    public void removeOldXmessages(int days){
+        ArrayList<Mail> tmpList = new ArrayList<>();
+        Date today = new Date();
+
+        for(Mail m : deleted){ //TODO: test perchè non sono sicuro
+            if(
+                    Duration.ofDays(Math.abs(m.getDate().getTime() - today.getTime())).toDays() > days
+            ){
+                    tmpList.add(m);
+            }
+        }
+
+        for(Mail m: tmpList){
+            deleted.remove(m);
+        }
+
+    }
 
     //TODO: aggiungere metodo per sync roba in jvm a file salvati -> nel controller!
 
