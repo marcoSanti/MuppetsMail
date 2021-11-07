@@ -3,7 +3,9 @@ package org.prog3.project.muppetsmail.Model;
 import org.prog3.project.muppetsmail.Model.Exceptions.MailNotFoundException;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MailBox implements Serializable {
@@ -20,11 +22,14 @@ public class MailBox implements Serializable {
         * TODO: creare sistema per evitare 2 mailbox stesso nome
         * */
         this.username = username;
-        this.inbox = new ArrayList<Mail>();
-        this.sent = new ArrayList<Mail>();
-        this.deleted = new ArrayList<Mail>();
+        this.inbox = new ArrayList<>();
+        this.sent = new ArrayList<>();
+        this.deleted = new ArrayList<>();
     }
 
+    /*
+    * This methods return a mail message from a certain string id
+    * */
     public Mail getEmail(String mailId, List<Mail> folder) throws MailNotFoundException{
         for(Mail t: folder) if(t.getMailId().equals(mailId)) return t;
 
@@ -37,6 +42,9 @@ public class MailBox implements Serializable {
 
     //TODO: aggiungere metodo per sync roba in jvm a file salvati -> nel controller!
 
+    /*
+    * This method allows to empty the trash folder
+    * */
     public void emptyAllTrash(){ this.deleted.clear(); }
 
     public String getUsername() {

@@ -10,15 +10,15 @@ public class Mail implements Serializable {
     private ArrayList<String> to;
     private String message;
     private String subject;
-    private Date sentDate;
+    private Date date;
 
-    public Mail(String mailId, String from, ArrayList<String> to, String message, String subject, Date sentDate) {
+    public Mail(String mailId, String from, ArrayList<String> to, String message, String subject) {
         this.mailId = mailId;
         this.from = from;
         this.to = to;
         this.message = message;
         this.subject = subject;
-        this.sentDate = sentDate;
+        this.date = new Date();
     }
 
     public String getMailId(){
@@ -41,8 +41,8 @@ public class Mail implements Serializable {
         return subject;
     }
 
-    public Date getSentDate() {
-        return sentDate;
+    public Date getDate() {
+        return date;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Mail implements Serializable {
                 ", to=" + to +
                 ", message='" + message + '\'' +
                 ", subject='" + subject + '\'' +
-                ", sentDate=" + sentDate +
+                ", sentDate=" + date +
                 '}';
     }
 }
