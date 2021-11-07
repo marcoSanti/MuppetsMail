@@ -30,7 +30,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="marco@localhost" GridPane.valignment="CENTER">
+                  <Label fx:id="usernameLabel" text="marco@localhost" GridPane.valignment="CENTER">
                      <GridPane.margin>
                         <Insets top="10.0" />
                      </GridPane.margin></Label>
@@ -50,16 +50,16 @@
                            <GridPane.margin>
                               <Insets top="10.0" />
                            </GridPane.margin></Label>
-                        <Circle fill="#44ff1f" radius="5.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                        <Circle fx:id="connectionStatusCircle" fill="#44ff1f" radius="5.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                            <GridPane.margin>
                               <Insets top="10.0" />
                            </GridPane.margin></Circle>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Logout" GridPane.columnIndex="2">
+                        <Button fx:id="logOutButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Logout" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets left="2.0" top="10.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Disconnect" GridPane.columnIndex="1">
+                        <Button fx:id="disconnectButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="87.0" text="Disconnect" GridPane.columnIndex="1">
                            <GridPane.margin>
                               <Insets right="2.0" top="10.0" />
                            </GridPane.margin>
@@ -92,29 +92,29 @@
                         <RowConstraints maxHeight="466.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Inbox">
+                        <Button fx:id="inboxButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Inbox">
                            <GridPane.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sent" GridPane.rowIndex="1">
+                        <Button fx:id="sentButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sent" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Trash" GridPane.rowIndex="2">
+                        <Button fx:id="trashButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Trash" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </GridPane.margin>
                         </Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="New Message" GridPane.rowIndex="4">
+                        <Button fx:id="createNewMessageButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="New Message" GridPane.rowIndex="4">
                            <GridPane.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </GridPane.margin>
                         </Button>
                      </children>
                   </GridPane>
-                  <ListView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
+                  <ListView fx:id="listViewMessages" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
                </children>
                <GridPane.margin>
                   <Insets top="15.0" />
