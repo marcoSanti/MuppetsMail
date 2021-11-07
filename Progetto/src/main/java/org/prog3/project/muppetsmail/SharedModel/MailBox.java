@@ -1,6 +1,6 @@
-package org.prog3.project.muppetsmail.Model;
+package org.prog3.project.muppetsmail.SharedModel;
 
-import org.prog3.project.muppetsmail.Model.Exceptions.MailNotFoundException;
+import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
 import java.io.Serializable;
 import java.time.Duration;

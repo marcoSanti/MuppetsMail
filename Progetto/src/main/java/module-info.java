@@ -4,6 +4,8 @@ module org.prog3.project.muppetsmail {
     requires javafx.graphics;
 
 
-    opens org.prog3.project.muppetsmail to javafx.fxml;
-    exports org.prog3.project.muppetsmail;
+    opens org.prog3.project.muppetsmail.Client to javafx.fxml;
+    opens org.prog3.project.muppetsmail.Server to javafx.fxml;
+    exports org.prog3.project.muppetsmail.Client;
+    exports org.prog3.project.muppetsmail.Server;
 }

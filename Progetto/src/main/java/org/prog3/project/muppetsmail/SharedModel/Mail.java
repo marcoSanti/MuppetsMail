@@ -1,4 +1,4 @@
-package org.prog3.project.muppetsmail.Model;
+package org.prog3.project.muppetsmail.SharedModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
