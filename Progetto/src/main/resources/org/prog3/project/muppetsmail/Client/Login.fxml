@@ -9,12 +9,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-<?import javafx.stage.Stage?>
 
 
-<Stage xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-   <scene>
-      <Scene>
+      <Scene xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.prog3.project.muppetsmail.Client.Controller.LoginController">
          <root>
             <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="362.0" prefWidth="599.0">
               <columnConstraints>
@@ -26,7 +23,7 @@
                 <RowConstraints maxHeight="301.6666564941406" minHeight="10.0" prefHeight="116.66665649414062" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Accesso a server di posta di chittemuerto">
+                  <Label text="Login to MuppetsMail server">
                      <font>
                         <Font name="System Bold" size="25.0" />
                      </font>
@@ -111,5 +108,3 @@
             </GridPane>
          </root>
       </Scene>
-   </scene>
-</Stage>

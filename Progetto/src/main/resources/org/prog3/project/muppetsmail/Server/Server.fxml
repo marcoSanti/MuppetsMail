@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 
 
-<Scene xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<Scene xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.prog3.project.muppetsmail.Server.Controller.ServerController">
    <root>
       <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="643.0" prefWidth="952.0">
         <columnConstraints>
