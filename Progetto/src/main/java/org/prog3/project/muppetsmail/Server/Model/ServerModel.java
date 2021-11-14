@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class ServerModel {
 
     private ObservableList<LogEntry> logEntries = FXCollections.observableArrayList();
-
     private ArrayList<MailBox> serverMailBoxes;
 
 
@@ -21,6 +20,8 @@ public class ServerModel {
     public void addMailBox(MailBox m){
         serverMailBoxes.add(m);
     }
+
+    public ArrayList<MailBox> getMailBoxes(){ return serverMailBoxes; }
 
 
 

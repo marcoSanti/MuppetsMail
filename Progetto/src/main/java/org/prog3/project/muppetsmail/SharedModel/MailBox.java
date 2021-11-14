@@ -42,7 +42,7 @@ public class MailBox implements Serializable {
     * to allow the class to be savedto local disk.
     * It requires the parameter fileName wich is the current fileName (with absolute / relative path)
     * */
-    public void createOutputObjectWriter(String fileName) throws IOException{
+    public synchronized void createOutputObjectWriter(String fileName) throws IOException{
         writer = new ObjectOutputStream(new FileOutputStream(fileName));
     }
 
@@ -105,7 +105,7 @@ public class MailBox implements Serializable {
     }
 
     //This method allows a mailbox to be saved into hard disk
-    public void writeToDisk() throws IOException {
+    public synchronized void writeToDisk() throws IOException {
         synchronized (this){
             writer.writeObject(this);
         }

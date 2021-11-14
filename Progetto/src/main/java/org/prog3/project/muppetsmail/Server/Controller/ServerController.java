@@ -98,7 +98,7 @@ public class ServerController implements Initializable {
                     model.addLog("MailBox loaded!");
                 } catch (IOException | ClassNotFoundException e) {
                     model.addLog(e.toString());
-                    System.out.println(e.toString());
+                    e.printStackTrace();
                 }
 
                 System.out.println(logMsg);

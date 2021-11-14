@@ -39,7 +39,7 @@ public class TestMailBoxSavedDaemon {
         }
 
 
-        MailboxSaveDaemon mailboxSaveDaemon = new MailboxSaveDaemon(mailboxes, secondsToSlepp, "./testMailBox/");
+        MailboxSaveDaemon mailboxSaveDaemon = new MailboxSaveDaemon(mailboxes, secondsToSlepp);
 
 
         try{
