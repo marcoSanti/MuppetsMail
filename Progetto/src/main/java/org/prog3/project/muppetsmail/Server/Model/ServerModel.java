@@ -9,7 +9,7 @@ public class ServerModel {
 
     public ObservableList<LogEntry> getLogEntries(){return this.logEntries; }
 
-    public void addLog(String message){
+    public synchronized void addLog(String message){
         logEntries.add(new LogEntry(message));
     }
 
