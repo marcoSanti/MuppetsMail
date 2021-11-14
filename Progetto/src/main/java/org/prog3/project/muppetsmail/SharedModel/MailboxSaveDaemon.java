@@ -13,20 +13,23 @@ public class MailboxSaveDaemon extends Thread {
     private int sleepDelaysMs;
     private ObjectOutputStream writer;
     private String mailboxUserName;
+    private String mailBoxPath;
 
-    public MailboxSaveDaemon(MailBox mailBox, int sleepDelayMs, String mailBoxUserName) {
+    public MailboxSaveDaemon(MailBox mailBox, int sleepDelayMs, String mailBoxUserName, String mailBoxPath) {
         super("Save Files Daemon");
         this.mailBox = mailBox;
         this.sleepDelaysMs = sleepDelayMs;
         this.mailboxUserName = mailBoxUserName;
+        this.mailBoxPath = mailBoxPath;
         setDaemon(true);
         createOutputStream();
     }
 
     private void createOutputStream() {
+
        try {
-           Files.createDirectories(Paths.get("./MailBoxes/"));
-           writer = new ObjectOutputStream(new FileOutputStream("./MailBoxes/" + mailboxUserName + ".muppetsMailBox"));
+           Files.createDirectories(Paths.get(mailBoxPath));
+           writer = new ObjectOutputStream(new FileOutputStream(mailBoxPath + mailboxUserName + ".muppetsMailBox"));
        } catch (IOException e) {
            e.printStackTrace();
        } finally {

@@ -12,7 +12,7 @@ public class TestMailBoxSavedDaemon {
         String username = "Pippo";
         int secondsToSlepp = 1500;
         MailBox mailbox = new MailBox(username);
-        MailboxSaveDaemon mailboxSaveDaemon = new MailboxSaveDaemon(mailbox, secondsToSlepp, username);
+        MailboxSaveDaemon mailboxSaveDaemon = new MailboxSaveDaemon(mailbox, secondsToSlepp, username, "./testMailBox/");
 
         mailboxSaveDaemon.start();
         try{
