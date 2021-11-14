@@ -29,6 +29,13 @@ public class ServerModel {
 
     public synchronized void addLog(String message){
         logEntries.add(new LogEntry(message));
+        System.out.println(message);
     }
+
+    public synchronized void addLog(String message, String detailedMessage){
+        logEntries.add(new LogEntry(message, detailedMessage));
+        System.out.println(message);
+    }
+
 
 }
