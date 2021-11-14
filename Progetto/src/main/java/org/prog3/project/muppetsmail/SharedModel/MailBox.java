@@ -3,6 +3,7 @@ package org.prog3.project.muppetsmail.SharedModel;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -16,7 +17,10 @@ public class MailBox implements Serializable {
     private ArrayList<Mail> sent;
     private ArrayList<Mail> deleted;
     private String username;
-    private transient final ObjectOutputStream writer;
+
+    //this must be transient as it is not serializable and must be allocated by every client each time that it requires to
+    //to enable, once the class is read, to set a writer, the method setObjectWriter is created
+    private transient ObjectOutputStream writer;
 
     /*
     * At the beginning, when the mailbox is created, only the user id is required
@@ -31,6 +35,17 @@ public class MailBox implements Serializable {
         this.sent = new ArrayList<>();
         this.deleted = new ArrayList<>();
     }
+
+
+    /*
+    * This method allows to crerate a file output stream,
+    * to allow the class to be savedto local disk.
+    * It requires the parameter fileName wich is the current fileName (with absolute / relative path)
+    * */
+    public void createOutputObjectWriter(String fileName) throws IOException{
+        writer = new ObjectOutputStream(new FileOutputStream(fileName));
+    }
+
 
     /**
      * @param mailToAdd

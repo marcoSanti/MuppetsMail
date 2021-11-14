@@ -9,9 +9,12 @@ import javafx.scene.control.TextField;
 import org.prog3.project.muppetsmail.Server.Model.LogEntry;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
+import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -68,6 +71,7 @@ public class ServerController implements Initializable {
 
 
     private void loadMailboxes() throws MailBoxNotFoundException {
+        ObjectInputStream mailBoxReader;
     //if mailbox folder does not exists, it will be created
         try {
             Files.createDirectory(Paths.get(mailBoxPath));
@@ -78,12 +82,25 @@ public class ServerController implements Initializable {
         }
 
         File mailBoxesdir = new File(mailBoxPath);
+
         if(mailBoxesdir.listFiles()!=null) {
             model.addLog("Loading mailboxes from folder");
             this.mailbox = Arrays.asList(mailBoxesdir.listFiles());
             for(File f: this.mailbox) {
                 String logMsg = "Loading " + f.getName().substring(0, f.getName().indexOf(".muppetsmail")) + " mailbox...";
                 model.addLog(logMsg);
+                //loading mailboxes into memory from file
+                try {
+                    mailBoxReader = new ObjectInputStream(new FileInputStream(f));
+                    MailBox tmp = (MailBox) mailBoxReader.readObject();
+                    tmp.createOutputObjectWriter(f.toString()); //create the output writer once the class has been loaded
+                    model.addMailBox(tmp);
+                    model.addLog("MailBox loaded!");
+                } catch (IOException | ClassNotFoundException e) {
+                    model.addLog(e.toString());
+                    System.out.println(e.toString());
+                }
+
                 System.out.println(logMsg);
             }
             model.addLog("Finished loading mailboxes!");
