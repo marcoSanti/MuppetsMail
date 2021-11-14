@@ -6,11 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldListCell;
 import org.prog3.project.muppetsmail.Server.Model.LogEntry;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
-import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.File;
 import java.io.IOException;
