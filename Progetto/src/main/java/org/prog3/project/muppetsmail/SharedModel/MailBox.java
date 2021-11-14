@@ -1,5 +1,6 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
+import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
 import java.io.Serializable;
@@ -27,10 +28,27 @@ public class MailBox implements Serializable {
         this.deleted = new ArrayList<>();
     }
 
+    /**
+     * @param mailToAdd
+     * @param mailBoxType can be 1: inbox, 2: deleted, 3: sent
+     */
+    public synchronized void addMail(Mail mailToAdd, int mailBoxType) throws MailBoxNotFoundException {
+        switch (mailBoxType) {
+            case 1:
+                inbox.add(mailToAdd);
+            case 2:
+                deleted.add(mailToAdd);
+            case 3:
+                sent.add(mailToAdd);
+            default:
+                throw new MailBoxNotFoundException("LOG ERROR: MAILBOX WIHT ID: "+mailBoxType+" NOT VALID");
+        }
+    }
+
     /*
     * This methods return a mail message from a certain string id
     * */
-    public Mail getEmail(String mailId, List<Mail> folder) throws MailNotFoundException{
+    public synchronized Mail getEmail(String mailId, List<Mail> folder) throws MailNotFoundException{
         for(Mail t: folder) if(t.getMailId().equals(mailId)) return t;
 
         throw new MailNotFoundException("Mail with id " + mailId + " not found in given folder!!");
@@ -41,7 +59,7 @@ public class MailBox implements Serializable {
     *This method allows to remove a message from a folder
     * and to move it to another folder
     */
-    public void moveTo(Mail msg, List<Mail> from, List<Mail> to){
+    public synchronized void moveTo(Mail msg, List<Mail> from, List<Mail> to){
         from.remove(msg);
         to.add(msg);
     }
@@ -50,7 +68,7 @@ public class MailBox implements Serializable {
     * This method allows to delete messages older than days
     * */
 
-    public void removeOldXmessages(int days){
+    public synchronized void removeOldXmessages(int days){
         ArrayList<Mail> tmpList = new ArrayList<>();
         Date today = new Date();
 
@@ -65,7 +83,6 @@ public class MailBox implements Serializable {
         for(Mail m: tmpList){
             deleted.remove(m);
         }
-
     }
 
     //TODO: aggiungere metodo per sync roba in jvm a file salvati -> nel controller!
@@ -73,7 +90,7 @@ public class MailBox implements Serializable {
     /*
     * This method allows to empty the trash folder
     * */
-    public void emptyAllTrash(){ this.deleted.clear(); }
+    public synchronized void emptyAllTrash(){ this.deleted.clear(); }
 
     public String getUsername() {
         return username;
