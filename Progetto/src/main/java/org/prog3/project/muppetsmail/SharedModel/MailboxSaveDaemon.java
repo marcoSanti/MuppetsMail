@@ -1,35 +1,30 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class MailboxSaveDaemon extends Thread {
-    private MailBox mailBox;
+    private ArrayList<MailBox> mailBoxes;
     private int sleepDelaysMs;
-    private ObjectOutputStream writer;
-    private String mailboxUserName;
     private String mailBoxPath;
 
-    public MailboxSaveDaemon(MailBox mailBox, int sleepDelayMs, String mailBoxUserName, String mailBoxPath) {
+    public MailboxSaveDaemon(ArrayList<MailBox> mailBoxes, int sleepDelayMs, String mailBoxPath) {
         super("Save Files Daemon");
-        this.mailBox = mailBox;
+        this.mailBoxes = mailBoxes;
         this.sleepDelaysMs = sleepDelayMs;
-        this.mailboxUserName = mailBoxUserName;
         this.mailBoxPath = mailBoxPath;
         setDaemon(true);
         createOutputStream();
+        start();
     }
 
     private void createOutputStream() {
 
        try {
            Files.createDirectories(Paths.get(mailBoxPath));
-           writer = new ObjectOutputStream(new FileOutputStream(mailBoxPath + mailboxUserName + ".muppetsMailBox"));
        } catch (IOException e) {
            e.printStackTrace();
        } finally {
@@ -40,13 +35,13 @@ public class MailboxSaveDaemon extends Thread {
     public void run() {
         while(true) {
             try {
-                System.out.println("Saving mailbox to " + mailboxUserName + ".dat");
-                writer.writeObject(mailBox);
+                for(MailBox m : mailBoxes) {
+                    m.writeToDisk();
+                    System.out.println("Written to disk mailbox of: " + m.getUsername());
+                }
                 sleep(sleepDelaysMs);
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
-            } finally {
-
             }
         }
 

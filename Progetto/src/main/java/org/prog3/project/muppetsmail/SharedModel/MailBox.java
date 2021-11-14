@@ -3,6 +3,8 @@ package org.prog3.project.muppetsmail.SharedModel;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -14,14 +16,16 @@ public class MailBox implements Serializable {
     private ArrayList<Mail> sent;
     private ArrayList<Mail> deleted;
     private String username;
+    private transient final ObjectOutputStream writer;
 
     /*
     * At the beginning, when the mailbox is created, only the user id is required
     * */
-    public MailBox(String username) {
+    public MailBox(String username, ObjectOutputStream writer) {
         /*
         * TODO: creare sistema per evitare 2 mailbox stesso nome
         * */
+        this.writer = writer;
         this.username = username;
         this.inbox = new ArrayList<>();
         this.sent = new ArrayList<>();
@@ -82,6 +86,13 @@ public class MailBox implements Serializable {
 
         for(Mail m: tmpList){
             deleted.remove(m);
+        }
+    }
+
+    //This method allows a mailbox to be saved into hard disk
+    public void writeToDisk() throws IOException {
+        synchronized (this){
+            writer.writeObject(this);
         }
     }
 

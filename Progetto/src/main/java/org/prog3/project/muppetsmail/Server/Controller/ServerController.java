@@ -76,7 +76,7 @@ public class ServerController implements Initializable {
             model.addLog("MailBox folder not found! creating a new one!");
         } catch (IOException e) {
             model.addLog("MailBox folder found! folder is: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         File mailBoxesdir = new File(mailBoxPath);
@@ -84,10 +84,11 @@ public class ServerController implements Initializable {
             model.addLog("Loading mailboxes from folder");
             this.mailbox = Arrays.asList(mailBoxesdir.listFiles());
             for(File f: this.mailbox) {
-                String logMsg = "Loading " +f.getName() + " mailbox...";
+                String logMsg = "Loading " + f.getName().substring(0, f.getName().indexOf(".muppetsmail")) + " mailbox...";
                 model.addLog(logMsg);
                 System.out.println(logMsg);
             }
+            model.addLog("Finished loading mailboxes!");
         } else {
             model.addLog("LOG ERROR MESSAGE IN LOADMAILBOXES: mailBox dir not found!");
             throw new MailBoxNotFoundException("LOG ERROR MESSAGE IN LOADMAILBOXES: mailBox dir not found!");
