@@ -9,6 +9,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.prog3.project.muppetsmail.Server.Model.LogEntry;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
+import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicated;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
@@ -45,6 +46,7 @@ public class ServerController implements Initializable {
      */
     List<File> mailbox;
     ServerModel model;
+
     private final String mailBoxPath = "./ServerMailBoxes/";
 
     @Override
@@ -114,8 +116,8 @@ public class ServerController implements Initializable {
                     tmp.createOutputObjectWriter(f.toString()); //create the output writer once the class has been loaded
                     model.addMailBox(tmp);
                     model.addLog("Mailbox loaded", "Loaded " + f.getName().substring(0, f.getName().indexOf(".muppetsmail")) + " mailbox, from file " + f.toString());
-                } catch (IOException | ClassNotFoundException e) {
-                    model.addLog(e.toString());
+                } catch (IOException | ClassNotFoundException | MailBoxNameDuplicated e) {
+                    model.addLog("Error loading mailbox!", "Mailbox: " + f + "\n" + e.toString());
                     e.printStackTrace();
                 }
 

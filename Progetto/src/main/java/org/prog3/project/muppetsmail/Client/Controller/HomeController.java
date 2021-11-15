@@ -3,7 +3,15 @@ package org.prog3.project.muppetsmail.Client.Controller;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.SharedModel.Mail;
+
+import java.net.URL;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class HomeController {
 
@@ -12,6 +20,7 @@ public class HomeController {
     * */
 
     public Label usernameLabel;
+    public Label serverLabel;
     public Button disconnectButton;
     public Button logOutButton;
     public Circle connectionStatusCircle;
@@ -19,5 +28,25 @@ public class HomeController {
     public Button inboxButton;
     public Button trashButton;
     public Button createNewMessageButton;
-    public ListView listViewMessages;
+    public ListView<Mail> listViewMessages;
+    private ClientModel appModel;
+    private Stage loginStage;
+
+    public void setClientModel(ClientModel clientModel){
+        this.appModel = clientModel;
+        usernameLabel.textProperty().bind(appModel.getUsername());
+        serverLabel.textProperty().bind(appModel.getEndpoint());
+    }
+
+    public void setLoginStage (Stage lStage){this.loginStage = lStage;}
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        logOutButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                loginStage.show();
+            }
+        });
+    }
 }

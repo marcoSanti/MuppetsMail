@@ -26,9 +26,6 @@ public class MailBox implements Serializable {
     * At the beginning, when the mailbox is created, only the user id is required
     * */
     public MailBox(String username, ObjectOutputStream writer) {
-        /*
-        * TODO: creare sistema per evitare 2 mailbox stesso nome
-        * */
         this.writer = writer;
         this.username = username;
         this.inbox = new ArrayList<>();
@@ -86,32 +83,30 @@ public class MailBox implements Serializable {
     /*
     * This method allows to delete messages older than days
     * */
-
     public synchronized void removeOldXmessages(int days){
         ArrayList<Mail> tmpList = new ArrayList<>();
         Date today = new Date();
 
-        for(Mail m : deleted){ //TODO: test perchè non sono sicuro
-            if(
-                    Duration.ofDays(Math.abs(m.getDate().getTime() - today.getTime())).toDays() > days
-            ){
+        synchronized (deleted) {
+            for (Mail m : deleted) {
+                if (
+                        Duration.ofDays(Math.abs(m.getDate().getTime() - today.getTime())).toDays() > days
+                ) {
                     tmpList.add(m);
+                }
+            }
+            for (Mail m : tmpList) {
+                deleted.remove(m);
             }
         }
-
-        for(Mail m: tmpList){
-            deleted.remove(m);
-        }
     }
+
 
     //This method allows a mailbox to be saved into hard disk
     public synchronized void writeToDisk() throws IOException {
-        synchronized (this){
             writer.writeObject(this);
-        }
     }
 
-    //TODO: aggiungere metodo per sync roba in jvm a file salvati -> nel controller!
 
     /*
     * This method allows to empty the trash folder
@@ -121,6 +116,11 @@ public class MailBox implements Serializable {
     public String getUsername() {
         return username;
     }
+
+    /*
+    * Remember: every time we will access a single email from a folder, that operation will have
+    * to be synchronized on the mail object itself
+    * */
 
     public ArrayList<Mail> getInbox() {
         return inbox;

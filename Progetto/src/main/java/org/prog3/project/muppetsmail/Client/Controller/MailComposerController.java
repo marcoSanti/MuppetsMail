@@ -3,6 +3,7 @@ package org.prog3.project.muppetsmail.Client.Controller;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 
 public class MailComposerController {
 
@@ -15,4 +16,10 @@ public class MailComposerController {
     public Button mailSaveDraftButton;
     public Button mailDeleteDraftButton;
     public TextArea mailBodyViewer;
+
+    private ClientModel appModel;
+
+    public void setClientModel(ClientModel clientModel){
+        this.appModel = clientModel;
+    }
 }

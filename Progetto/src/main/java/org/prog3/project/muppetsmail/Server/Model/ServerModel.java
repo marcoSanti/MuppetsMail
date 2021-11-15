@@ -16,9 +16,12 @@ public class ServerModel {
         this.serverMailBoxes = new ArrayList<>();
     }
 
-
-    public void addMailBox(MailBox m){
-        serverMailBoxes.add(m);
+    public void addMailBox(MailBox mailBox) throws MailBoxNameDuplicated {
+        if(isUsernameAlreadyTaken(mailBox)) {
+            throw new MailBoxNameDuplicated("A mail with the same username already exists, please check the username and retry");
+        } else {
+            serverMailBoxes.add(mailBox);
+        }
     }
 
     public ArrayList<MailBox> getMailBoxes(){ return serverMailBoxes; }
