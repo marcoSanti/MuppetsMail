@@ -1,19 +1,20 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class HomeController {
+public class HomeController implements Initializable {
 
     /*
     * UI Vars

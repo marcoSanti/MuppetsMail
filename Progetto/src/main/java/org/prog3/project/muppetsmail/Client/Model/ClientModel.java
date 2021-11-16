@@ -41,5 +41,7 @@ public class ClientModel implements Serializable {
     }
 
 
-
+    public void setUsername(String username) {
+        this.username.set(username);
+    }
 }

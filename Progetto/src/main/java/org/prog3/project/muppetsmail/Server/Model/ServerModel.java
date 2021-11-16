@@ -2,6 +2,7 @@ package org.prog3.project.muppetsmail.Server.Model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicated;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.util.ArrayList;
@@ -24,10 +25,18 @@ public class ServerModel {
         }
     }
 
+    private boolean isUsernameAlreadyTaken(MailBox mailBox) {
+        boolean usernameDuplicated = false;
+        for (int i = 0; i < serverMailBoxes.size() && !usernameDuplicated; i++) {
+            if(serverMailBoxes.get(i).getUsername().equals(mailBox.getUsername())) {
+                usernameDuplicated = true;
+            }
+        }
+        return usernameDuplicated;
+    }
+
     public ArrayList<MailBox> getMailBoxes(){ return serverMailBoxes; }
-
-
-
+    
     public ObservableList<LogEntry> getLogEntries(){return this.logEntries; }
 
     public synchronized void addLog(String message){
