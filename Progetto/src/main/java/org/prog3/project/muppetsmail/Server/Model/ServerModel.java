@@ -12,7 +12,6 @@ public class ServerModel {
     private ObservableList<LogEntry> logEntries = FXCollections.observableArrayList();
     private ArrayList<MailBox> serverMailBoxes;
 
-
     public ServerModel(){
         this.serverMailBoxes = new ArrayList<>();
     }
@@ -48,6 +47,4 @@ public class ServerModel {
         logEntries.add(new LogEntry(message, detailedMessage));
         System.out.println(message);
     }
-
-
 }

@@ -24,10 +24,13 @@ public class ClientApp extends Application {
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("ClientIcon.png"))));
         HomeController homeController = loader.getController();
         homeController.setClientModel(appModel);
+        stage.setOnCloseRequest(windowEvent -> System.exit(0));
         stage.show();
 
         //show the login window
         Stage loginStage = new Stage();
+        loginStage.setResizable(false);
+        loginStage.setIconified(false);
         loader = new FXMLLoader(getClass().getResource("Login.fxml"));
         loginStage.setScene(loader.load());
         loginStage.setTitle("Login to Muppets Mail Server");

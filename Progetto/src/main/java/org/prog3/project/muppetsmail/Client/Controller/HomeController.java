@@ -1,5 +1,7 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
@@ -37,6 +39,13 @@ public class HomeController implements Initializable {
         this.appModel = clientModel;
         usernameLabel.textProperty().bind(appModel.getUsername());
         serverLabel.textProperty().bind(appModel.getEndpoint());
+
+        clientModel.getClientIsLogged().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+                toggleLoginLogOutButton();
+            }
+        });
     }
 
     public void setLoginStage (Stage lStage){this.loginStage = lStage;}
@@ -46,8 +55,18 @@ public class HomeController implements Initializable {
         logOutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+                appModel.getClientIsLogged().setValue(false);
                 loginStage.show();
             }
         });
     }
+
+    private void toggleLoginLogOutButton(){
+        if(appModel.getClientIsLogged().getValue()){
+            logOutButton.setText("Log out");
+        }else{
+            logOutButton.setText("Log in");
+        }
+    }
+
 }

@@ -6,10 +6,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -32,19 +35,25 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loginButton.setOnAction(actionEvent -> {
-            if(!serverInput.getText().equals("") && !portInput.getText().equals("") && !usernameInput.getText().equals("")){
-               Stage stage = (Stage) loginButton.getScene().getWindow();
-               stage.close();
-            }else{
-                String MissingFields = "";
-                if(serverInput.getText().equals("")) MissingFields += "Server Endpoint\n";
-                if(portInput.getText().equals("")) MissingFields += "Enpoint port\n";
-                if(usernameInput.getText().equals("")) MissingFields += "Username\n";
+        loginButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if(!serverInput.getText().equals("") && !portInput.getText().equals("") && !usernameInput.getText().equals("")){
+                    appModel.getClientIsLogged().set(true);
+                    Stage stage = (Stage) loginButton.getScene().getWindow();
+                    stage.close();
+                }else{
+                    String MissingFields = "";
+                    if(serverInput.getText().equals("")) MissingFields += "Server Endpoint\n\t";
+                    if(portInput.getText().equals("")) MissingFields += "Enpoint port\n\t";
+                    if(usernameInput.getText().equals("")) MissingFields += "Username\n\t";
 
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Warning: the following fields are empty:\n" + MissingFields + "Complete them and retry!");
-                alert.show();
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Warning: the following fields are empty:\n\t" + MissingFields + "\nComplete them and retry!");
+                    alert.show();
+                }
             }
         });
+
+
     }
 }

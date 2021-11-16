@@ -86,9 +86,7 @@ public class ServerController implements Initializable {
                     }
                 }
         );
-
     }
-
 
     private void loadMailboxes() throws MailBoxNotFoundException {
         ObjectInputStream mailBoxReader;
@@ -108,7 +106,6 @@ public class ServerController implements Initializable {
 
             for(File f: this.mailbox) {
 
-
                 //loading mailboxes into memory from file
                 try {
                     mailBoxReader = new ObjectInputStream(new FileInputStream(f));
@@ -120,7 +117,6 @@ public class ServerController implements Initializable {
                     model.addLog("Error loading mailbox!", "Mailbox: " + f + "\n" + e.toString());
                     e.printStackTrace();
                 }
-
             }
             model.addLog("Finished loading mailboxes!");
         } else {

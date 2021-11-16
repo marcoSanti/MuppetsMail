@@ -39,7 +39,7 @@ public class MailBox implements Serializable {
     * to allow the class to be savedto local disk.
     * It requires the parameter fileName wich is the current fileName (with absolute / relative path)
     * */
-    public synchronized void createOutputObjectWriter(String fileName) throws IOException{
+    public synchronized void createOutputObjectWriter(String fileName) throws IOException {
         writer = new ObjectOutputStream(new FileOutputStream(fileName));
     }
 

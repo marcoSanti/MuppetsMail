@@ -1,5 +1,7 @@
 package org.prog3.project.muppetsmail.Client.Model;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -16,13 +18,18 @@ public class ClientModel implements Serializable {
     private StringProperty endpointPort;
     private StringProperty connectionStatus;
     private MailBox userMailBox;
+    private transient BooleanProperty clientIsLogged;
+
 
     public ClientModel() {
         this.username = new SimpleStringProperty();
         this.endpoint = new SimpleStringProperty();
         this.endpointPort = new SimpleStringProperty();
         this.connectionStatus = new SimpleStringProperty();
+        this.clientIsLogged = new SimpleBooleanProperty(false);
     }
+
+    public BooleanProperty getClientIsLogged(){ return this.clientIsLogged; }
 
     public StringProperty getEndpoint() {
         return this.endpoint;
