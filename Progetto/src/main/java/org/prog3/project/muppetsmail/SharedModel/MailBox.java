@@ -53,12 +53,15 @@ public class MailBox implements Serializable {
         switch (mailBoxType) {
             case 1:
                 inbox.add(mailToAdd);
+                inboxObs.add(mailToAdd);
                 break;
             case 2:
                 sent.add(mailToAdd);
+                sentObs.add(mailToAdd);
                 break;
             case 3:
                 deleted.add(mailToAdd);
+                deletedObs.add(mailToAdd);
                 break;
             default:
                 throw new MailBoxNotFoundException("LOG ERROR: MAILBOX WIHT ID: "+mailBoxType+" NOT VALID");
@@ -90,9 +93,6 @@ public class MailBox implements Serializable {
         ArrayList<Mail> toArr;
         ObservableList<Mail> fromArrObs;
         ObservableList<Mail> toArrObs;
-
-
-        System.out.println(from);
 
         switch (from){
             case 1:
@@ -140,6 +140,21 @@ public class MailBox implements Serializable {
         }
     }
 
+
+    /*this method generates the observaleList that will be shown into the
+    listview.
+    * */
+    public void generateObservableItems(){
+        inboxObs = FXCollections.observableArrayList();
+        for(Mail m : inbox) inboxObs.add(m);
+
+        sentObs = FXCollections.observableArrayList();
+        for(Mail m : sent) sentObs.add(m);
+
+        deletedObs = FXCollections.observableArrayList();
+        for(Mail m : deleted) deletedObs.add(m);
+    }
+
     /*
     * This method allows to delete messages older than days
     * */
@@ -182,21 +197,16 @@ public class MailBox implements Serializable {
     * to be synchronized on the mail object itself
     * */
 
+
     public ObservableList<Mail> getInbox() {
-        inboxObs = FXCollections.observableArrayList();
-        for(Mail m : inbox) inboxObs.add(m);
         return inboxObs;
     }
 
     public ObservableList<Mail> getSent() {
-        sentObs = FXCollections.observableArrayList();
-        for(Mail m : sent) sentObs.add(m);
         return sentObs;
     }
 
     public ObservableList<Mail> getDeleted() {
-        deletedObs = FXCollections.observableArrayList();
-        for(Mail m : deleted) deletedObs.add(m);
         return deletedObs;
     }
 }

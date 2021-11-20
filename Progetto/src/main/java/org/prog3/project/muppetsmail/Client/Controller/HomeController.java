@@ -60,6 +60,8 @@ public class HomeController implements Initializable {
                 (observableValue, oldVal, newVal) -> {
                             if((appModel != null) && newVal){
 
+                                appModel.getUserMailBox().generateObservableItems(); //generate the observable items
+
                                 connectionStatusCircle.setFill(Color.LAWNGREEN);
                                 listViewMessages.setItems(appModel.getUserMailBox().getInbox());
 

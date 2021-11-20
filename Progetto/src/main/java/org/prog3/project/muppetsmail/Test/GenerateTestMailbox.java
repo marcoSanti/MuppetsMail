@@ -23,6 +23,7 @@ public class GenerateTestMailbox {
 
         MailBox mbox;
 
+
         try {
             Files.createDirectories(Paths.get("./testMailBox"));
         } catch (IOException e) {
@@ -32,6 +33,7 @@ public class GenerateTestMailbox {
         for(String s: usernames){
             try {
                 mbox = new MailBox(s, new ObjectOutputStream(new FileOutputStream("./testMailBox/" + s + ".muppetsmail")));
+                mbox.generateObservableItems();
                 ArrayList<String> to = new ArrayList<>();
                 to.add("noreply.demo");
 

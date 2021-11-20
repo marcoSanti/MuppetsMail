@@ -67,8 +67,8 @@ public class CellFactory extends ListCell<Mail> {
             mailFromLabel.setText("from: " +mail.getFrom());
             mailSubjectLabel.setText("Subject: "+ mail.getSubject());
 
-            ImageButton forwardMail = new ImageButton(new Image(ClientApp.class.getResource("bin.png").toString()), 27 ,27);
-            ImageButton deleteMail = new ImageButton(new Image(ClientApp.class.getResource("forward.png").toString()), 30 ,30);
+            ImageButton forwardMail = new ImageButton(new Image(ClientApp.class.getResource("forward.png").toString()), 27 ,27);
+            ImageButton deleteMail = new ImageButton(new Image(ClientApp.class.getResource("bin.png").toString()), 30 ,30);
 
             forwardMail.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -89,9 +89,9 @@ public class CellFactory extends ListCell<Mail> {
                 }
             });
 
-            //unable to make the event listener to fire so it is usless right now
-            //gridPane.add( forwardMail , 4,0);
-            //gridPane.add( deleteMail , 3,0);
+            
+            gridPane.add( forwardMail , 3,0);
+            gridPane.add( deleteMail , 4,0);
 
 
 
