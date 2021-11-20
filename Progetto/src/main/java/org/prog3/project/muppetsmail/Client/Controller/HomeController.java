@@ -1,6 +1,8 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
 
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -57,6 +59,7 @@ public class HomeController implements Initializable {
         appModel.getClientIsLogged().addListener(
                 (observableValue, oldVal, newVal) -> {
                             if((appModel != null) && newVal){
+
                                 connectionStatusCircle.setFill(Color.LAWNGREEN);
                                 listViewMessages.setItems(appModel.getUserMailBox().getInbox());
 
@@ -86,6 +89,7 @@ public class HomeController implements Initializable {
                             }
                 }
         );
+
     }
 
     public void setLoginStage (Stage lStage){this.loginStage = lStage;}
@@ -95,7 +99,7 @@ public class HomeController implements Initializable {
 
         connectionStatusCircle.setFill(Color.RED);
 
-        listViewMessages.setCellFactory(mailListView -> new CellFactory());
+        listViewMessages.setCellFactory(mailListView -> new CellFactory(appModel.getUserMailBox()));
 
         logOutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -124,9 +128,10 @@ public class HomeController implements Initializable {
             stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
 
             MailViewerController mailViewerController = loader.getController();
-            mailViewerController.setClientModel(appModel);
-
             Mail itemSelected = listViewMessages.getSelectionModel().getSelectedItem();
+            mailViewerController.setClientModel(appModel);
+            mailViewerController.setMail(itemSelected);
+
             mailViewerController.showMailFrom.setText(itemSelected.getFrom());
             mailViewerController.showMailTo.setText(itemSelected.getTo().get(0));
             mailViewerController.showMailSubject.setText(itemSelected.getSubject());

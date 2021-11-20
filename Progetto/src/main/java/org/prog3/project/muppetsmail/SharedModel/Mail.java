@@ -16,16 +16,25 @@ public class Mail implements Serializable {
     private Date date;
     private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
     private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
+    private int currentMailBox;
 
-    public Mail(String mailId, String from, ArrayList<String> to, String message, String subject) {
+    public Mail(String mailId, String from, ArrayList<String> to, String message, String subject, int currentMailBox) {
         this.mailId = mailId;
         this.from = from;
         this.to = to;
         this.message = message;
         this.subject = subject;
         this.date = new Date();
+        this.currentMailBox = currentMailBox;
     }
 
+    public int getCurrentMailBox() {
+        return currentMailBox;
+    }
+
+    public void setCurrentMailBox(int currentMailBox) {
+        this.currentMailBox = currentMailBox;
+    }
     public String getMailId(){
         return mailId;
     }

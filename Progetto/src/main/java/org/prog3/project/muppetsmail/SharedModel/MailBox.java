@@ -15,10 +15,9 @@ import java.util.Date;
 import java.util.List;
 
 public class MailBox implements Serializable {
-    private ArrayList<Mail> inbox;
-    private ArrayList<Mail> sent;
-    private ArrayList<Mail> deleted;
+    private ArrayList<Mail> inbox, sent,  deleted; //vars used to store indefinitely informations as well as when they are transported between hosts
     private String username;
+    private transient ObservableList<Mail> sentObs, deletedObs, inboxObs; //variable used to store elements while app is running
 
     //this must be transient as it is not serializable and must be allocated by every client each time that it requires to
     //to enable, once the class is read, to set a writer, the method setObjectWriter is created
@@ -48,7 +47,7 @@ public class MailBox implements Serializable {
 
     /**
      * @param mailToAdd
-     * @param mailBoxType can be 1: inbox, 2: deleted, 3: sent
+     * @param mailBoxType can be 1: inbox, 2: sent, 3: deleted
      */
     public synchronized void addMail(Mail mailToAdd, int mailBoxType) throws MailBoxNotFoundException {
         switch (mailBoxType) {
@@ -56,10 +55,10 @@ public class MailBox implements Serializable {
                 inbox.add(mailToAdd);
                 break;
             case 2:
-                deleted.add(mailToAdd);
+                sent.add(mailToAdd);
                 break;
             case 3:
-                sent.add(mailToAdd);
+                deleted.add(mailToAdd);
                 break;
             default:
                 throw new MailBoxNotFoundException("LOG ERROR: MAILBOX WIHT ID: "+mailBoxType+" NOT VALID");
@@ -79,10 +78,66 @@ public class MailBox implements Serializable {
     /*
     *This method allows to remove a message from a folder
     * and to move it to another folder
+    * from and to are as follows:
+    *   1 -> inbox
+    *   2 -> sent
+    *   3 -> deleted
+    * if a message is deleted from deleted, then it is totally deleted!
+    * the operation has to be done twice: once for the local running observable list, and once for the long term storage ArrayList
     */
-    public synchronized void moveTo(Mail msg, List<Mail> from, List<Mail> to){
-        from.remove(msg);
-        to.add(msg);
+    public synchronized void moveTo(Mail msg, int from, int dest ){
+        ArrayList<Mail> fromArr;
+        ArrayList<Mail> toArr;
+        ObservableList<Mail> fromArrObs;
+        ObservableList<Mail> toArrObs;
+
+
+        System.out.println(from);
+
+        switch (from){
+            case 1:
+                fromArr = inbox;
+                fromArrObs = inboxObs;
+                break;
+            case 2:
+                fromArr = sent;
+                fromArrObs = sentObs;
+                break;
+            case 3:
+                fromArr = deleted;
+                fromArrObs = deletedObs;
+                break;
+            default:
+                return;
+        }
+
+        switch (dest){
+            case 1:
+                toArr = inbox;
+                toArrObs = inboxObs;
+                break;
+            case 2:
+                toArr = sent;
+                toArrObs = sentObs;
+                break;
+            case 3:
+                toArr = deleted;
+                toArrObs = deletedObs;
+                break;
+            default:
+                return;
+        }
+
+        if(from == 3){
+            deleted.remove(msg);
+            deletedObs.remove(msg);
+        }
+        else{
+            fromArr.remove(msg);
+            fromArrObs.remove(msg);
+            toArr.add(msg);
+            toArrObs.add(msg);
+        }
     }
 
     /*
@@ -128,21 +183,21 @@ public class MailBox implements Serializable {
     * */
 
     public ObservableList<Mail> getInbox() {
-        ObservableList<Mail> tmp = FXCollections.observableArrayList();
-        for(Mail m : inbox) tmp.add(m);
-        return tmp;
+        inboxObs = FXCollections.observableArrayList();
+        for(Mail m : inbox) inboxObs.add(m);
+        return inboxObs;
     }
 
     public ObservableList<Mail> getSent() {
-        ObservableList<Mail> tmp = FXCollections.observableArrayList();
-        for(Mail m : sent) tmp.add(m);
-        return tmp;
+        sentObs = FXCollections.observableArrayList();
+        for(Mail m : sent) sentObs.add(m);
+        return sentObs;
     }
 
     public ObservableList<Mail> getDeleted() {
-        ObservableList<Mail> tmp = FXCollections.observableArrayList();
-        for(Mail m : deleted) tmp.add(m);
-        return tmp;
+        deletedObs = FXCollections.observableArrayList();
+        for(Mail m : deleted) deletedObs.add(m);
+        return deletedObs;
     }
 }
 

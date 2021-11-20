@@ -1,12 +1,16 @@
 package org.prog3.project.muppetsmail.Client.ViewObjs;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import org.prog3.project.muppetsmail.Client.ClientApp;
+import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
+import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -25,9 +29,16 @@ public class CellFactory extends ListCell<Mail> {
     private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
     private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
 
+    private  MailBox userMailbox;
+
+    public CellFactory( MailBox userMailbox){
+        this.userMailbox = userMailbox;
+    }
+
     @Override
     protected void updateItem(Mail mail, boolean empty) {
         super.updateItem(mail, empty);
+
 
         if(empty || mail == null){
             setText(null);
@@ -59,10 +70,28 @@ public class CellFactory extends ListCell<Mail> {
             ImageButton forwardMail = new ImageButton(new Image(ClientApp.class.getResource("bin.png").toString()), 27 ,27);
             ImageButton deleteMail = new ImageButton(new Image(ClientApp.class.getResource("forward.png").toString()), 30 ,30);
 
+            forwardMail.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    //copiare la mail e inviarla a qualcun altro!
+                }
+            });
 
+            deleteMail.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    //synchronized (mail) {
+                        System.out.println("Deleting");
+                        int oldMailBox = mail.getCurrentMailBox();
+                        mail.setCurrentMailBox(3);
+                        userMailbox.moveTo(mail, oldMailBox, 3);
+                    //}
+                }
+            });
 
-            gridPane.add( forwardMail , 4,0);
-            gridPane.add( deleteMail , 3,0);
+            //unable to make the event listener to fire so it is usless right now
+            //gridPane.add( forwardMail , 4,0);
+            //gridPane.add( deleteMail , 3,0);
 
 
 

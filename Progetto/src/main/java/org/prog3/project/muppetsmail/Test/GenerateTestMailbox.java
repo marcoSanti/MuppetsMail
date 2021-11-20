@@ -37,9 +37,9 @@ public class GenerateTestMailbox {
 
                 for(int i=0; i<10;i++){
                     System.out.println(i);
-                    mbox.addMail(new Mail("i"+i, "testEmail", to, "Test email of inbox", "inbox Test for " + s), 1);
-                    mbox.addMail(new Mail("d"+i, "testEmail", to, "Test email of deleted", "deleted Test for " + s), 2);
-                    mbox.addMail(new Mail("s"+i, "testEmail", to, "Test email of sent", "sent Test for " + s), 3);
+                    mbox.addMail(new Mail("i"+i, "testEmail", to, "Test email of inbox", "inbox Test"+i+ " for " + s, 1), 1);
+                    mbox.addMail(new Mail("d"+i, "testEmail", to, "Test email of sent", "sent Test"+i+ " for " + s, 2), 2);
+                    mbox.addMail(new Mail("s"+i, "testEmail", to, "Test email of deleted", "deleted Test"+i+ " for " + s, 3), 3);
                 }
                 mbox.saveToDisk();
             }catch(MailBoxNotFoundException | IOException e){
