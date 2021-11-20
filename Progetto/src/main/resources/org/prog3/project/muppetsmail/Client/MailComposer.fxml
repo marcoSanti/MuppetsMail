@@ -18,8 +18,8 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="200.0" minHeight="0.0" prefHeight="45.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="100.0" minHeight="0.0" prefHeight="7.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="494.0" minHeight="10.0" prefHeight="493.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="100.0" minHeight="0.0" prefHeight="7.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <GridPane>
@@ -68,7 +68,7 @@
                               <Insets right="5.0" />
                            </GridPane.margin>
                         </TextField>
-                        <TextField GridPane.rowIndex="2" fx:id="mailSubject">
+                        <TextField fx:id="mailSubject" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin>
@@ -77,37 +77,27 @@
                   </GridPane>
                </children>
             </GridPane>
-            <GridPane GridPane.rowIndex="1">
+            <GridPane GridPane.rowIndex="2">
               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="274.0" minWidth="10.0" prefWidth="274.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="mailSendButton" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="14.0" text="Send email">
+                  <Button fx:id="mailSendButton" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="14.0" text="Send email" GridPane.columnIndex="3">
                      <GridPane.margin>
-                        <Insets bottom="2.0" left="5.0" right="2.0" top="2.0" />
-                     </GridPane.margin>
-                  </Button>
-                  <Button fx:id="mailSaveDraftButton" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="14.0" text="Save draft" GridPane.columnIndex="1">
-                     <GridPane.margin>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </GridPane.margin>
-                  </Button>
-                  <Button fx:id="mailDeleteDraftButton" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="14.0" prefWidth="74.0" text="Delete Draft" GridPane.columnIndex="2">
-                     <GridPane.margin>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                        <Insets bottom="2.0" right="5.0" top="2.0" />
                      </GridPane.margin>
                   </Button>
                </children>
             </GridPane>
-            <TextArea fx:id="mailBodyViewer" prefHeight="515.0" prefWidth="591.0" GridPane.rowIndex="2">
+            <TextArea fx:id="mailBodyViewer" prefHeight="515.0" prefWidth="591.0" GridPane.rowIndex="1">
                <GridPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" />
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="10.0" />
                </GridPane.margin>
             </TextArea>
          </children>

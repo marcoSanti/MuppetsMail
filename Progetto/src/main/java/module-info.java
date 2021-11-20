@@ -17,4 +17,5 @@ module org.prog3.project.muppetsmail {
 
     exports org.prog3.project.muppetsmail.SharedModel;
     exports org.prog3.project.muppetsmail.SharedModel.Exceptions;
+    exports org.prog3.project.muppetsmail.Client.ViewObjs;
 }

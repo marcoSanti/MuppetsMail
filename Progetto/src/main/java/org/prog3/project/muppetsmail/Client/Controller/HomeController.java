@@ -1,20 +1,25 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import org.prog3.project.muppetsmail.Client.ClientApp;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.Client.ViewObjs.CellFactory;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
@@ -25,7 +30,6 @@ public class HomeController implements Initializable {
 
     public Label usernameLabel;
     public Label serverLabel;
-    public Button disconnectButton;
     public Button logOutButton;
     public Circle connectionStatusCircle;
     public Button sentButton;
@@ -45,7 +49,10 @@ public class HomeController implements Initializable {
                 (observableValue, aBoolean, t1) -> toggleLoginLogOutButton()
         );
 
-
+        /*
+        * The onAction for email buttons are defined here as it is
+        * required the model to not be null.
+        * */
         appModel.getClientIsLogged().addListener(
                 (observableValue, oldVal, newVal) -> {
                             if((appModel != null) && newVal){
@@ -58,17 +65,21 @@ public class HomeController implements Initializable {
                                 trashButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getDeleted()));
                                 sentButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getSent()));
 
+                                createNewMessageButton.setOnAction(actionEvent -> showMailComposer() );
 
                             }else { //if disconnected or not yet connected
                                 listViewMessages.setItems(null);
                                 sentButton.setOnAction(null);
                                 trashButton.setOnAction(null);
                                 inboxButton.setOnAction(null);
+                                createNewMessageButton.setOnAction(null);
                                 connectionStatusCircle.setFill(Color.RED);
                             }
                 }
         );
+
     }
+
 
     public void setLoginStage (Stage lStage){this.loginStage = lStage;}
 
@@ -76,6 +87,8 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         connectionStatusCircle.setFill(Color.RED);
+
+        listViewMessages.setCellFactory(mailListView -> new CellFactory());
 
         logOutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -95,6 +108,25 @@ public class HomeController implements Initializable {
         }
     }
 
+
+    private void showMailComposer(){
+        FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
+        try {
+            Stage stage = new Stage();
+            stage.setScene(loader.load());
+            stage.setTitle("Write new email - Muppets Mail Client");
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
+
+            MailComposerController composerController = loader.getController();
+            composerController.setClientModel(appModel);
+
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

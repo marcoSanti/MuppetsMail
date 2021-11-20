@@ -22,4 +22,6 @@ public class MailComposerController {
     public void setClientModel(ClientModel clientModel){
         this.appModel = clientModel;
     }
+
+    public void setAppModel(ClientModel clientModel){ this.appModel = clientModel; }
 }
