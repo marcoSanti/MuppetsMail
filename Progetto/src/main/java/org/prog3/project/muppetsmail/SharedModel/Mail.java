@@ -1,8 +1,11 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Mail implements Serializable {
     private String mailId;
@@ -11,6 +14,8 @@ public class Mail implements Serializable {
     private String message;
     private String subject;
     private Date date;
+    private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
+    private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
 
     public Mail(String mailId, String from, ArrayList<String> to, String message, String subject) {
         this.mailId = mailId;
@@ -47,12 +52,12 @@ public class Mail implements Serializable {
 
     @Override
     public String toString() {
-        return "Mail{" +
-                "from='" + from + '\'' +
-                ", to=" + to +
-                ", message='" + message + '\'' +
-                ", subject='" + subject + '\'' +
-                ", sentDate=" + date +
-                '}';
+        Date today = new Date();
+        long todayDiff = date.getTime() - today.getDate();
+        if(TimeUnit.HOURS.toHours(todayDiff) > 24){
+            return "[" + dtfOld.format(date) + "]" + "    from: " + from + "    subject: " + subject;
+        }else{
+            return "[" + dtfToday.format(date) + "]" + "    from: " + from + "    subject: " + subject;
+        }
     }
 }

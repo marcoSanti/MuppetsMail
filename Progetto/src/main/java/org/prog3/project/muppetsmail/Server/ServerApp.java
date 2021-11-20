@@ -23,10 +23,6 @@ public class ServerApp extends Application {
         ServerController controller = loader.getController();
         controller.setModel(serverModel);
         stage.show();
-
-        //starting demon to update local mailboxes to file
-        MailboxSaveDaemon saveDemon  = new MailboxSaveDaemon(serverModel.getMailBoxes(), 3000);
-        serverModel.addLog("Started mailbox file synchronization daemon");
     }
 
     public static void main(String[] args) {

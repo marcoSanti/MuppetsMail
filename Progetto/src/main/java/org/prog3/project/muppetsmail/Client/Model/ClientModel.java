@@ -29,6 +29,15 @@ public class ClientModel implements Serializable {
         this.clientIsLogged = new SimpleBooleanProperty(false);
     }
 
+    public MailBox getUserMailBox() {
+        return userMailBox;
+    }
+
+    public void setUserMailBox(MailBox userMailBox) {
+        this.userMailBox = userMailBox;
+    }
+
+
     public BooleanProperty getClientIsLogged(){ return this.clientIsLogged; }
 
     public StringProperty getEndpoint() {

@@ -1,5 +1,7 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
@@ -106,7 +108,7 @@ public class MailBox implements Serializable {
 
 
     //This method allows a mailbox to be saved into hard disk
-    public synchronized void writeToDisk() throws IOException {
+    public synchronized void saveToDisk() throws IOException {
             writer.writeObject(this);
     }
 
@@ -131,8 +133,10 @@ public class MailBox implements Serializable {
         return tmp;
     }
 
-    public ArrayList<Mail> getSent() {
-        return sent;
+    public ObservableList<Mail> getSent() {
+        ObservableList<Mail> tmp = FXCollections.observableArrayList();
+        for(Mail m : sent) tmp.add(m);
+        return tmp;
     }
 
     public ObservableList<Mail> getDeleted() {
