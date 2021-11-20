@@ -28,8 +28,8 @@ import java.util.ResourceBundle;
 public class ServerController implements Initializable {
 
     /*
-    * UI Vars
-    * */
+     * UI Vars
+     * */
 
     public Button startServerButton;
     public Button stopServerButton;
@@ -52,33 +52,33 @@ public class ServerController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         startServerButton.setOnAction(actionEvent -> {
-                                                        model.addLog("Starting server");
-                                                        this.startServer();
-                                                        model.addLog("Server started");
-                                                      });
+            model.addLog("Starting server");
+            this.startServer();
+            model.addLog("Server started");
+        });
 
         stopServerButton.setOnAction(actionEvent -> {
-                                                        model.addLog("Stopping server");
-                                                        this.startServer();
-                                                        model.addLog("Server stopped");
-                                                    });
+            model.addLog("Stopping server");
+            this.startServer();
+            model.addLog("Server stopped");
+        });
 
         restartServerButton.setOnAction(actionEvent -> {
-                                                        model.addLog("Stopping server");
-                                                        this.stopServer();
-                                                        this.startServer();
-                                                        model.addLog("Server stopped");
-                                                    });
+            model.addLog("Stopping server");
+            this.stopServer();
+            this.startServer();
+            model.addLog("Server stopped");
+        });
 
         listView.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<LogEntry>() {
                     @Override
                     public void changed(ObservableValue<? extends LogEntry> observableValue, LogEntry oldValue, LogEntry newValue) {
-                        if(newValue != null){
+                        if (newValue != null) {
                             detailedMessage.setText(newValue.getDetailedMessage());
                             detailedTimestamp.setText(newValue.getTimestamp().toString());
                             message.setText(newValue.getMessage());
-                        }else{
+                        } else {
                             detailedMessage.setText("");
                             detailedTimestamp.setText("");
                             message.setText("");
@@ -95,16 +95,16 @@ public class ServerController implements Initializable {
             Files.createDirectory(Paths.get(mailBoxPath));
             model.addLog("MailBox folder not found! creating a new one!");
         } catch (IOException e) {
-            model.addLog("MailBox folder found!","Folder is: "+ e.getMessage());
+            model.addLog("MailBox folder found!", "Folder is: " + e.getMessage());
         }
 
         File mailBoxesdir = new File(mailBoxPath);
 
-        if(mailBoxesdir.listFiles()!=null) {
+        if (mailBoxesdir.listFiles() != null) {
             model.addLog("Loading mailboxes from folder");
             this.mailbox = Arrays.asList(Objects.requireNonNull(mailBoxesdir.listFiles()));
 
-            for(File f: this.mailbox) {
+            for (File f : this.mailbox) {
 
                 //loading mailboxes into memory from file
                 try {
@@ -137,8 +137,10 @@ public class ServerController implements Initializable {
     }
 
 
-    private void startServer() {}
+    private void startServer() {
+    }
 
-    private void stopServer() {}
+    private void stopServer() {
+    }
 
 }

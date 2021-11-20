@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -60,6 +61,14 @@ public class HomeController implements Initializable {
                                 listViewMessages.setItems(appModel.getUserMailBox().getInbox());
 
                                 //TODO: super bug: se mi loggo con user esistente e poi mi locco con user non esistente le mail sono le stesse di quello di prima... capirte come mai
+                                listViewMessages.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                                    @Override
+                                    public void handle(MouseEvent mouseEvent) {
+                                        if(mouseEvent.getClickCount()==2) {
+                                            showMailInfo();
+                                        }
+                                    }
+                                });
 
                                 inboxButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getInbox()));
                                 trashButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getDeleted()));
@@ -77,9 +86,7 @@ public class HomeController implements Initializable {
                             }
                 }
         );
-
     }
-
 
     public void setLoginStage (Stage lStage){this.loginStage = lStage;}
 
@@ -97,7 +104,6 @@ public class HomeController implements Initializable {
                 loginStage.show();
             }
         });
-
     }
 
     private void toggleLoginLogOutButton(){
@@ -108,6 +114,31 @@ public class HomeController implements Initializable {
         }
     }
 
+    private void showMailInfo() {
+        FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailViewer.fxml"));
+        try {
+            Stage stage = new Stage();
+            stage.setScene(loader.load());
+            stage.setTitle("Mail info - Muppets Mail Client");
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
+
+            MailViewerController mailViewerController = loader.getController();
+            mailViewerController.setClientModel(appModel);
+
+            Mail itemSelected = listViewMessages.getSelectionModel().getSelectedItem();
+            mailViewerController.showMailFrom.setText(itemSelected.getFrom());
+            mailViewerController.showMailTo.setText(itemSelected.getTo().get(0));
+            mailViewerController.showMailSubject.setText(itemSelected.getSubject());
+            mailViewerController.messageBodyDisplay.setText(itemSelected.getMessage());
+
+            stage.show();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void showMailComposer(){
         FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
@@ -127,6 +158,4 @@ public class HomeController implements Initializable {
             e.printStackTrace();
         }
     }
-
-
 }
