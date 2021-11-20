@@ -30,7 +30,7 @@ public class MailBox implements Serializable {
         this.username = username;
         this.inbox = new ArrayList<>();
         this.sent = new ArrayList<>();
-        this.deleted = new ArrayList<>();
+        this.deleted =new ArrayList<>();
     }
 
 
@@ -52,10 +52,13 @@ public class MailBox implements Serializable {
         switch (mailBoxType) {
             case 1:
                 inbox.add(mailToAdd);
+                break;
             case 2:
                 deleted.add(mailToAdd);
+                break;
             case 3:
                 sent.add(mailToAdd);
+                break;
             default:
                 throw new MailBoxNotFoundException("LOG ERROR: MAILBOX WIHT ID: "+mailBoxType+" NOT VALID");
         }
@@ -122,16 +125,20 @@ public class MailBox implements Serializable {
     * to be synchronized on the mail object itself
     * */
 
-    public ArrayList<Mail> getInbox() {
-        return inbox;
+    public ObservableList<Mail> getInbox() {
+        ObservableList<Mail> tmp = FXCollections.observableArrayList();
+        for(Mail m : inbox) tmp.add(m);
+        return tmp;
     }
 
     public ArrayList<Mail> getSent() {
         return sent;
     }
 
-    public ArrayList<Mail> getDeleted() {
-        return deleted;
+    public ObservableList<Mail> getDeleted() {
+        ObservableList<Mail> tmp = FXCollections.observableArrayList();
+        for(Mail m : deleted) tmp.add(m);
+        return tmp;
     }
 }
 

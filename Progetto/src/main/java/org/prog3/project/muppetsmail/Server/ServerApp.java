@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Server.Controller.ServerController;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
-import org.prog3.project.muppetsmail.SharedModel.MailboxSaveDaemon;
 
 import java.util.Objects;
 
