@@ -80,16 +80,15 @@ public class CellFactory extends ListCell<Mail> {
             deleteMail.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    //synchronized (mail) {
-                        System.out.println("Deleting");
+                    synchronized (mail) {
                         int oldMailBox = mail.getCurrentMailBox();
                         mail.setCurrentMailBox(3);
                         userMailbox.moveTo(mail, oldMailBox, 3);
-                    //}
+                    }
                 }
             });
 
-            
+
             gridPane.add( forwardMail , 3,0);
             gridPane.add( deleteMail , 4,0);
 
