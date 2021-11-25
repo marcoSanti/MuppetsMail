@@ -140,8 +140,7 @@ public class HomeController implements Initializable {
             mailViewerController.messageBodyDisplay.setText(itemSelected.getMessage());
 
             stage.show();
-
-
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

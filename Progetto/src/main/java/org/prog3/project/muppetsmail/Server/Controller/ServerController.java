@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,7 +35,7 @@ public class ServerController implements Initializable {
     public Button startServerButton;
     public Button stopServerButton;
     public Button restartServerButton;
-    public Button serverConfigButton;
+    public Button serverClearButton;
     public Button sendCommandButton;
     public TextField commandInput;
     public ListView<LogEntry> listView;
@@ -46,21 +47,19 @@ public class ServerController implements Initializable {
      */
     List<File> mailbox;
     ServerModel model;
+    Thread serverThreadManager;
+    private ServerThreadManager serverThreadManagerClass;
 
     private final String mailBoxPath = "./ServerMailBoxes/";
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         startServerButton.setOnAction(actionEvent -> {
-            model.addLog("Starting server");
             this.startServer();
-            model.addLog("Server started");
         });
 
         stopServerButton.setOnAction(actionEvent -> {
-            model.addLog("Stopping server");
-            this.startServer();
-            model.addLog("Server stopped");
+            this.stopServer();
         });
 
         restartServerButton.setOnAction(actionEvent -> {
@@ -86,6 +85,9 @@ public class ServerController implements Initializable {
                     }
                 }
         );
+        
+        serverClearButton.setOnAction(actionEvent -> {model.getLogEntries().clear();});
+
     }
 
     private void loadMailboxes() throws MailBoxNotFoundException {
@@ -131,6 +133,7 @@ public class ServerController implements Initializable {
         listView.setItems(model.getLogEntries());
         try {
             this.loadMailboxes();
+            this.startServer();
         } catch (MailBoxNotFoundException e) {
             e.printStackTrace();
         }
@@ -138,9 +141,23 @@ public class ServerController implements Initializable {
 
 
     private void startServer() {
+       if((serverThreadManagerClass == null) || (serverThreadManagerClass!=null && !serverThreadManagerClass.isRunning())){
+            model.addLog("Starting server");
+            serverThreadManagerClass = new ServerThreadManager(this.model);
+            serverThreadManager = new Thread(serverThreadManagerClass);
+            serverThreadManager.start();
+        }else{
+            model.addLog("Unable to start server.", "Server is already running.");
+        }
+
     }
 
     private void stopServer() {
+       if(serverThreadManagerClass != null && serverThreadManagerClass.isRunning()) {
+           model.addLog("Stopping server...");
+           serverThreadManagerClass.stopServer();
+       }
+       else model.addLog("Unable to stop server!", "Server was not started.");
     }
 
 }
