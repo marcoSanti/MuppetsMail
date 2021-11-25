@@ -27,7 +27,6 @@ public class ServerThreadManager implements Runnable {
         try {
             this.isRunning = false;
             server.close();
-            this.addLogToGUI("Server terminated correctly");
         } catch (IOException e) {
             this.addLogToGUI("IOException, something went wrong...", e.getMessage());
         } catch (NullPointerException e) {
@@ -46,7 +45,8 @@ public class ServerThreadManager implements Runnable {
                 threadPool.execute(new ServerThread(socket));
             }
         } catch (IOException e) {
-            this.addLogToGUI(e.getMessage(), e.toString());
+//            this.addLogToGUI(e.getMessage(), e.toString());
+            System.out.println("SOCKET CLOSED");
         }finally {
             this.isRunning = false;
             if(server != null && !server.isClosed()) stopServer();

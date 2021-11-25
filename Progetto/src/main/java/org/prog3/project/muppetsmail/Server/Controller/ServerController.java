@@ -63,10 +63,14 @@ public class ServerController implements Initializable {
         });
 
         restartServerButton.setOnAction(actionEvent -> {
-            model.addLog("Stopping server");
-            this.stopServer();
-            this.startServer();
-            model.addLog("Server stopped");
+            if(serverThreadManagerClass!=null && serverThreadManagerClass.isRunning()) {
+                this.stopServer();
+                this.startServer();
+
+            } else {
+                this.startServer();
+            }
+
         });
 
         listView.getSelectionModel().selectedItemProperty().addListener(
@@ -142,10 +146,10 @@ public class ServerController implements Initializable {
 
     private void startServer() {
        if((serverThreadManagerClass == null) || (serverThreadManagerClass!=null && !serverThreadManagerClass.isRunning())){
-            model.addLog("Starting server");
             serverThreadManagerClass = new ServerThreadManager(this.model);
             serverThreadManager = new Thread(serverThreadManagerClass);
             serverThreadManager.start();
+            model.addLog("Server started");
         }else{
             model.addLog("Unable to start server.", "Server is already running.");
         }
@@ -154,8 +158,8 @@ public class ServerController implements Initializable {
 
     private void stopServer() {
        if(serverThreadManagerClass != null && serverThreadManagerClass.isRunning()) {
-           model.addLog("Stopping server...");
            serverThreadManagerClass.stopServer();
+           model.addLog("Server stopped");
        }
        else model.addLog("Unable to stop server!", "Server was not started.");
     }
