@@ -13,10 +13,7 @@ import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicate
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.file.Files;
@@ -94,7 +91,7 @@ public class ServerController implements Initializable {
     }
 
     private void loadMailboxes() throws MailBoxNotFoundException {
-        ObjectInputStream mailBoxReader;
+        ObjectInputStream mailBoxReader = null;
         //if mailbox folder does not exists, it will be created
         try {
             Files.createDirectory(Paths.get(mailBoxPath));
@@ -105,9 +102,16 @@ public class ServerController implements Initializable {
 
         File mailBoxesdir = new File(mailBoxPath);
 
-        if (mailBoxesdir.listFiles() != null) {
+        File[] files = mailBoxesdir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return !name.equals(".DS_Store");
+            }
+        });
+
+        if (files != null) {
             model.addLog("Loading mailboxes from folder");
-            this.mailbox = Arrays.asList(Objects.requireNonNull(mailBoxesdir.listFiles()));
+            this.mailbox = Arrays.asList(files);
 
             for (File f : this.mailbox) {
 
@@ -119,8 +123,8 @@ public class ServerController implements Initializable {
                     model.addMailBox(tmp);
                     model.addLog("Mailbox loaded", "Loaded " + f.getName().substring(0, f.getName().indexOf(".muppetsmail")) + " mailbox, from file " + f.toString());
                 } catch (IOException | ClassNotFoundException | MailBoxNameDuplicated e) {
-                    model.addLog("Error loading mailbox!", "Mailbox: " + f + "\n" + e.toString());
-                    e.printStackTrace();
+                    model.addLog("Error loading mailbox!", "Mailbox: " + f + "\n" + e.getMessage());
+                    System.out.println(e.getMessage());
                 }
             }
             model.addLog("Finished loading mailboxes!");
@@ -128,6 +132,7 @@ public class ServerController implements Initializable {
             model.addLog("Error in loading mail boxes!", "Mailbox folder was not found!");
             throw new MailBoxNotFoundException("LOG ERROR MESSAGE IN LOADMAILBOXES: mailBox dir not found!");
         }
+        this.startServer();
     }
 
     //this is our "initialize" since we cannot do anything until we set the application model!
@@ -136,7 +141,7 @@ public class ServerController implements Initializable {
         listView.setItems(model.getLogEntries());
         try {
             this.loadMailboxes();
-            this.startServer();
+
         } catch (MailBoxNotFoundException e) {
             e.printStackTrace();
         }

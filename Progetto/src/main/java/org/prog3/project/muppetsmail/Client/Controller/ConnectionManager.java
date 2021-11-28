@@ -1,16 +1,30 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
+import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.Client.Model.Constants;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.constant.Constable;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 public class ConnectionManager {
     private String server;
     private int port;
     Socket socket = null;
+    ExecutorService executors;
+    ClientModel clientModel;
 
-    public ConnectionManager(String server, int port) {
+    public ConnectionManager(String server, int port, ClientModel model) {
         this.server = server;
         this.port = port;
+        this.clientModel = model;
+        this.executors = Executors.newFixedThreadPool(Constants.NUM_OF_THREADS);
     }
 
     public boolean connectToServer() {
@@ -18,20 +32,20 @@ public class ConnectionManager {
         try {
             socket = new Socket("127.0.0.1", port);
             connectionEstablished = true;
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return connectionEstablished;
     }
 
-    public void closeConnectionToServer() {
-        try {
-            socket.close();
-            System.out.println("Socket closed");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Condition runTask(int command, Lock lock){
+        NetworkTask nt = new NetworkTask(clientModel, command, lock);
+        executors.execute(nt);
+        return nt.jobDone();
     }
+
+    public void shotDownConnection(){this.executors.shutdown();}
 
     public String getServer() {
         return server;

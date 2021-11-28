@@ -42,7 +42,7 @@ public class ServerThreadManager implements Runnable {
             this.isRunning = true;
             while(true){
                 Socket socket = server.accept();
-                threadPool.execute(new ServerThread(socket));
+                threadPool.execute(new ServerThread(socket, serverModel));
             }
         } catch (IOException e) {
 //            this.addLogToGUI(e.getMessage(), e.toString());

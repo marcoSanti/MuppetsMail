@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Path;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.Client.Model.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
@@ -24,6 +25,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LoginController implements Initializable {
 
@@ -48,7 +53,7 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loginButton.setOnAction(actionEvent -> {
             if(!serverInput.getText().equals("") && !portInput.getText().equals("") && !usernameInput.getText().equals("")){
-
+                appModel.connectionManager = new ConnectionManager(serverInput.getText(), Integer.parseInt(portInput.getText()), appModel);
                 String mailBoxSavePath ="./ClientMailBoxes/";
 
                 try {
@@ -60,9 +65,17 @@ public class LoginController implements Initializable {
 
                 } catch (IOException | ClassNotFoundException e) {
                     //mailbox was not found! download from server
+                    System.out.println("MailBox not found! dpwnloading it from internet");
+
+                  
+                        Lock lock = new ReentrantReadWriteLock().readLock();
+                        Condition cond = appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
+                        lock.lock();
+
+
+
 
                 }finally {
-                     appModel.connectionManager = new ConnectionManager("127.0.0.1", Integer.parseInt(portInput.getText()));
                     if(appModel.connectionManager.connectToServer()) {
                         appModel.getClientIsLogged().set(true);
                         Stage stage = (Stage) loginButton.getScene().getWindow();
