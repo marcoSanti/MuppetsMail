@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.constant.Constable;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Condition;
@@ -39,10 +40,9 @@ public class ConnectionManager {
         return connectionEstablished;
     }
 
-    public Condition runTask(int command, Lock lock){
+    public void runTask(int command, Object lock){
         NetworkTask nt = new NetworkTask(clientModel, command, lock);
         executors.execute(nt);
-        return nt.jobDone();
     }
 
     public void shotDownConnection(){this.executors.shutdown();}

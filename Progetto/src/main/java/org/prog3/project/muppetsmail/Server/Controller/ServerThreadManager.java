@@ -45,7 +45,7 @@ public class ServerThreadManager implements Runnable {
                 threadPool.execute(new ServerThread(socket, serverModel));
             }
         } catch (IOException e) {
-//          this.addLogToGUI(e.getMessage(), e.toString());
+            this.addLogToGUI(e.getMessage(), e.toString());
             System.out.println("SOCKET CLOSED");
         }finally {
             this.isRunning = false;

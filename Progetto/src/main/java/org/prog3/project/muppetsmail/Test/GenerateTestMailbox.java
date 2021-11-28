@@ -32,7 +32,8 @@ public class GenerateTestMailbox {
 
         for(String s: usernames){
             try {
-                mbox = new MailBox(s, new ObjectOutputStream(new FileOutputStream("./ServerMailBoxes/" + s + ".muppetsmail")));
+                mbox = new MailBox(s);
+                mbox.createOutputObjectWriter("./ServerMailBoxes/" + s + ".muppetsmail");
                 mbox.generateObservableItems();
                 ArrayList<String> to = new ArrayList<>();
                 to.add("noreply.demo");
@@ -44,7 +45,7 @@ public class GenerateTestMailbox {
                     mbox.addMail(new Mail("s"+i, "testEmail", to, "Test email of deleted", "deleted Test"+i+ " for " + s, 3), 3);
                 }
                 mbox.saveToDisk();
-            }catch(MailBoxNotFoundException | IOException e){
+            }catch(IOException | MailBoxNotFoundException e){
                 e.printStackTrace();
             }
         }

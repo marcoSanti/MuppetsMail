@@ -136,7 +136,7 @@ public class HomeController implements Initializable {
             mailViewerController.setMail(itemSelected);
 
             mailViewerController.showMailFrom.setText(itemSelected.getFrom());
-            mailViewerController.showMailTo.setText(itemSelected.getTo().get(0));
+            mailViewerController.showMailTo.setText(itemSelected.getTo().toString());
             mailViewerController.showMailSubject.setText(itemSelected.getSubject());
             mailViewerController.messageBodyDisplay.setText(itemSelected.getMessage());
 

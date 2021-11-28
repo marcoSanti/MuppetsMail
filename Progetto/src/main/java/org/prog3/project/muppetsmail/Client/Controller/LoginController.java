@@ -64,15 +64,23 @@ public class LoginController implements Initializable {
                     appModel.setUserMailBox(tmp);
 
                 } catch (IOException | ClassNotFoundException e) {
-                    //mailbox was not found! download from server
-                    System.out.println("MailBox not found! dpwnloading it from internet");
+                        //mailbox was not found! download from server
+                        System.out.println("MailBox not found! downloading it from internet");
 
-                  
-                        Lock lock = new ReentrantReadWriteLock().readLock();
-                        Condition cond = appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
-                        lock.lock();
+                        Object lock = new Object();
+                        appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
+                        try {
+                            synchronized (lock){
+                                lock.wait();
+                            }
+                            //mailbox is available into local storage.
+                            mailBoxReader = new ObjectInputStream(new FileInputStream(mailBoxSavePath + usernameInput.getText() + ".muppetsmail"));
+                            MailBox tmp  =(MailBox) mailBoxReader.readObject();
+                            appModel.setUserMailBox(tmp);
 
-
+                        } catch (InterruptedException | IOException | ClassNotFoundException ex) {
+                            System.out.println(ex.getMessage());
+                        }
 
 
                 }finally {

@@ -26,7 +26,7 @@ public class MailBox implements Serializable {
     /*
     * At the beginning, when the mailbox is created, only the user id is required
     * */
-    public MailBox(String username, ObjectOutputStream writer) {
+    public MailBox(String username) {
         this.writer = writer;
         this.username = username;
         this.inbox = new ArrayList<>();

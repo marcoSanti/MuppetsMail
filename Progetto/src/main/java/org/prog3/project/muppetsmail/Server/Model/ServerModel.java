@@ -35,7 +35,6 @@ public class ServerModel {
         return usernameDuplicated;
     }
 
-    public ArrayList<MailBox> getMailBoxes(){ return serverMailBoxes; }
 
     public MailBox getMailBox(String username) {
         MailBox mailBoxToReturn = null;
