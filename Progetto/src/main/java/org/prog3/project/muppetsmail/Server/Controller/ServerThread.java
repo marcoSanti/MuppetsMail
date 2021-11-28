@@ -52,7 +52,7 @@ public class ServerThread implements Runnable {
                     tmp.generateObservableItems();
                     tmp.createOutputObjectWriter("./ServerMailBoxes/" + username + ".muppetsmail");
                     ArrayList<String> to = new ArrayList<>(); to.add(username + "@muppetsmail.org");
-                    Mail welcomeMail = new Mail("welcomeMail", "noreply@muppetsmail.org", to , "Welcome to muppetmail! an email project by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
+                    Mail welcomeMail = new Mail("welcomeMail", "welcome@muppetsmail.org", to , "Welcome to muppetsmail! an email Server and client by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
                     tmp.addMail(welcomeMail, Constants.MAILBOX_INBOX_FOLDER);
 
                     tmp.saveToDisk();
