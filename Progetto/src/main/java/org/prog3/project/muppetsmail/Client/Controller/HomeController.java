@@ -88,6 +88,7 @@ public class HomeController implements Initializable {
                                 inboxButton.setOnAction(null);
                                 createNewMessageButton.setOnAction(null);
                                 connectionStatusCircle.setFill(Color.RED);
+                                appModel.connectionManager.closeConnectionToServer();
                             }
                 }
         );
@@ -107,6 +108,7 @@ public class HomeController implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 appModel.getClientIsLogged().setValue(false);
+
                 loginStage.show();
             }
         });

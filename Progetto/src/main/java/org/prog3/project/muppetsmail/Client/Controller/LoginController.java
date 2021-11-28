@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -61,9 +62,15 @@ public class LoginController implements Initializable {
                     //mailbox was not found! download from server
 
                 }finally {
-                    appModel.getClientIsLogged().set(true);
-                    Stage stage = (Stage) loginButton.getScene().getWindow();
-                    stage.close();
+                     appModel.connectionManager = new ConnectionManager("127.0.0.1", Integer.parseInt(portInput.getText()));
+                    if(appModel.connectionManager.connectToServer()) {
+                        appModel.getClientIsLogged().set(true);
+                        Stage stage = (Stage) loginButton.getScene().getWindow();
+                        stage.close();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Error: cannot established connection with server\n");
+                        alert.show();
+                    }
                 }
 
 

@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.prog3.project.muppetsmail.Client.Controller.ConnectionManager;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ public class ClientModel implements Serializable {
     private StringProperty connectionStatus;
     private MailBox userMailBox;
     private transient BooleanProperty clientIsLogged;
+    public ConnectionManager connectionManager;
 
 
     public ClientModel() {

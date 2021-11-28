@@ -91,7 +91,6 @@ public class ServerController implements Initializable {
         );
         
         serverClearButton.setOnAction(actionEvent -> {model.getLogEntries().clear();});
-
     }
 
     private void loadMailboxes() throws MailBoxNotFoundException {
@@ -145,6 +144,7 @@ public class ServerController implements Initializable {
 
 
     private void startServer() {
+
        if((serverThreadManagerClass == null) || (serverThreadManagerClass!=null && !serverThreadManagerClass.isRunning())){
             serverThreadManagerClass = new ServerThreadManager(this.model);
             serverThreadManager = new Thread(serverThreadManagerClass);
