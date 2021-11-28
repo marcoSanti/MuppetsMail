@@ -20,6 +20,7 @@ public class ServerApp extends Application {
         stage.setTitle("Muppets Mail Server");
         stage.setResizable(false);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("ServerIcon.png"))));
+        stage.setOnCloseRequest(windowEvent -> System.exit(0));
         ServerController controller = loader.getController();
         controller.setModel(serverModel);
         stage.show();

@@ -42,7 +42,6 @@ public class ServerController implements Initializable {
     /**
      * Others variables
      */
-    List<File> mailbox;
     ServerModel model;
     Thread serverThreadManager;
     private ServerThreadManager serverThreadManagerClass;
@@ -100,23 +99,18 @@ public class ServerController implements Initializable {
             model.addLog("MailBox folder found!", "Folder is: " + e.getMessage());
         }
 
-        File mailBoxesdir = new File(mailBoxPath);
 
-        File[] files = mailBoxesdir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return !name.equals(".DS_Store");
-            }
-        });
+
+        File[] files = new File(mailBoxPath).listFiles((dir, name) -> !name.equals(".DS_Store"));
 
         if (files != null) {
             model.addLog("Loading mailboxes from folder");
-            this.mailbox = Arrays.asList(files);
 
-            for (File f : this.mailbox) {
+
+            for (File f : files) {
 
                 //loading mailboxes into memory from file
-                try {
+              try {
                     mailBoxReader = new ObjectInputStream(new FileInputStream(f));
                     MailBox tmp = (MailBox) mailBoxReader.readObject();
                     tmp.createOutputObjectWriter(f.toString()); //create the output writer once the class has been loaded

@@ -25,20 +25,20 @@ public class GenerateTestMailbox {
 
 
         try {
-            Files.createDirectories(Paths.get("./testMailBox"));
+            Files.createDirectories(Paths.get("./ServerMailBoxes"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         for(String s: usernames){
             try {
-                mbox = new MailBox(s, new ObjectOutputStream(new FileOutputStream("./testMailBox/" + s + ".muppetsmail")));
+                mbox = new MailBox(s, new ObjectOutputStream(new FileOutputStream("./ServerMailBoxes/" + s + ".muppetsmail")));
                 mbox.generateObservableItems();
                 ArrayList<String> to = new ArrayList<>();
                 to.add("noreply.demo");
 
                 for(int i=0; i<10;i++){
-                    System.out.println(i);
+
                     mbox.addMail(new Mail("i"+i, "testEmail", to, "Test email of inbox", "inbox Test"+i+ " for " + s, 1), 1);
                     mbox.addMail(new Mail("d"+i, "testEmail", to, "Test email of sent", "sent Test"+i+ " for " + s, 2), 2);
                     mbox.addMail(new Mail("s"+i, "testEmail", to, "Test email of deleted", "deleted Test"+i+ " for " + s, 3), 3);
@@ -49,7 +49,7 @@ public class GenerateTestMailbox {
             }
         }
 
-
+        System.out.println("Mailboxes generated!");
     }
 
 }

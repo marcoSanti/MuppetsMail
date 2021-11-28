@@ -22,7 +22,7 @@ public class MailBox implements Serializable {
     //this must be transient as it is not serializable and must be allocated by every client each time that it requires to
     //to enable, once the class is read, to set a writer, the method setObjectWriter is created
     private transient ObjectOutputStream writer;
-
+    private transient String fileWriterPath = null;
     /*
     * At the beginning, when the mailbox is created, only the user id is required
     * */
@@ -32,6 +32,7 @@ public class MailBox implements Serializable {
         this.inbox = new ArrayList<>();
         this.sent = new ArrayList<>();
         this.deleted =new ArrayList<>();
+
     }
 
 
@@ -41,7 +42,7 @@ public class MailBox implements Serializable {
     * It requires the parameter fileName wich is the current fileName (with absolute / relative path)
     * */
     public synchronized void createOutputObjectWriter(String fileName) throws IOException {
-        writer = new ObjectOutputStream(new FileOutputStream(fileName));
+        this.fileWriterPath = fileName;
     }
 
 
@@ -179,7 +180,8 @@ public class MailBox implements Serializable {
 
     //This method allows a mailbox to be saved into hard disk
     public synchronized void saveToDisk() throws IOException {
-            writer.writeObject(this);
+        if(writer == null) writer = new ObjectOutputStream(new FileOutputStream(fileWriterPath));
+        writer.writeObject(this);
     }
 
 
