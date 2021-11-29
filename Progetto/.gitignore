@@ -1,6 +1,0 @@
-*.class
-*.DS_Store
-*target*
-*.muppetsmail
-Progetto/.idea/*
-*/target/*
