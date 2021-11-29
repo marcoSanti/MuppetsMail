@@ -8,6 +8,8 @@ import org.prog3.project.muppetsmail.Client.Controller.HomeController;
 import org.prog3.project.muppetsmail.Client.Controller.LoginController;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 
+import java.awt.*;
+import java.net.URL;
 import java.util.Objects;
 
 public class ClientApp extends Application {
@@ -22,6 +24,12 @@ public class ClientApp extends Application {
         stage.setTitle("Muppets Mail Client");
         stage.setResizable(false);
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("ClientIcon.png"))));
+
+        //This thre lines are here to set mac os icon of the dock. Check if it works on windows!
+        final Taskbar tb = Taskbar.getTaskbar();
+        URL url = getClass().getResource("ClientIcon.png");
+        tb.setIconImage(Toolkit.getDefaultToolkit().getImage(url));
+
         HomeController homeController = loader.getController();
         homeController.setClientModel(appModel);
         stage.setOnCloseRequest(windowEvent -> System.exit(0));
