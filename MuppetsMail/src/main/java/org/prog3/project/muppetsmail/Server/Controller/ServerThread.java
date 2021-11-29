@@ -59,13 +59,33 @@ public class ServerThread implements Runnable {
                     serverModel.addMailBox(tmp); //todo: return an error class to client in case a duplicated exists eve though it should never be fired!
 
                 }
-
-
                 serverOutputStream.writeObject(this.serverModel.getMailBox(username));
 
             } else if (input.getClass() == Mail.class) {
                 Mail inputMail = (Mail) input;
                 this.addLogToGUI("An sent email was generated from: " + inputMail.getFrom());
+                serverModel.getMailBox(inputMail.getFrom()).addMail(inputMail, Constants.MAILBOX_SENT_FOLDER);
+
+                boolean errorInSendingEmail = false;
+                ArrayList<String> returnEmailError = new ArrayList<String>();
+                returnEmailError.add(inputMail.getFrom());
+                ArrayList<String> destUserNames = inputMail.getTo();
+
+                for(String user: destUserNames) {
+                    System.out.println("Trying to send an email to: " + user);
+                    if(this.checkIfUsernameExist(user)) {
+                        serverModel.getMailBox(user).addMail(inputMail,Constants.MAILBOX_INBOX_FOLDER);
+                    } else {
+                        errorInSendingEmail = true;
+                        Mail errorEmail = new Mail("", "webmaster@muppetsmail.org", returnEmailError, "We were unable to deliver the email to " + user + "; with email subkect of: "
+                                + inputMail.getSubject() + "Because user does not exist on our server!", "Unable to deliver email!", Constants.MAILBOX_INBOX_FOLDER );
+                        serverModel.getMailBox(user).addMail(errorEmail, Constants.MAILBOX_INBOX_FOLDER);
+                    }
+                }
+
+                if(errorInSendingEmail){
+                    //todo: send notification to client that new inbox email are found!
+                }
 
             } else {
                 this.addLogToGUI("Received invalid command", "received invalid input of class:" + input.getClass() + " , from remote address: " + socket.getInetAddress());
@@ -83,6 +103,15 @@ public class ServerThread implements Runnable {
                 this.addLogToGUI("Error in ServerThread on closing socket", e.getMessage());
             }
         }
+    }
+
+    private boolean checkIfUsernameExist(String user) {
+        boolean userFound = false;
+        if(serverModel.getMailBox(user)!=null) {
+            userFound = true;
+        }
+
+        return userFound;
     }
 
     private void addLogToGUI(String message){

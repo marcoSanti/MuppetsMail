@@ -2,6 +2,7 @@ package org.prog3.project.muppetsmail.Client.Controller;
 
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.Client.Model.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class NetworkTask implements Runnable{
     ClientModel appModel;
     final Object lock;
     int command;
+    Mail mailToBeSent;
 
     public NetworkTask(ClientModel appModel, int command, Object lock) {
         this.appModel = appModel;
@@ -27,6 +29,11 @@ public class NetworkTask implements Runnable{
         this.initialiseStreams();
         this.command = command;
         this.lock = lock;
+    }
+
+    public NetworkTask(ClientModel appModel, int command, Object lock, Mail mailToBeSent) {
+        this(appModel, command, lock);
+        this.mailToBeSent = mailToBeSent;
     }
 
     @Override
@@ -38,7 +45,6 @@ public class NetworkTask implements Runnable{
                     synchronized (lock){
                         clientOutputStream.writeObject(appModel.getUsername().getValue());
                         MailBox mb = (MailBox) clientInputStream.readObject();
-                        System.out.println(mb);
                         mb.createOutputObjectWriter("./ClientMailBoxes/" + mb.getUsername() + ".muppetsmail");
                         mb.saveToDisk();
                         lock.notifyAll();
@@ -47,7 +53,10 @@ public class NetworkTask implements Runnable{
                     break;
 
                 case Constants.COMMAND_SEND_MAIL:
-
+                    synchronized (lock) {
+                        clientOutputStream.writeObject(this.mailToBeSent);
+                        lock.notifyAll();
+                    }
                     break;
 
                 default:

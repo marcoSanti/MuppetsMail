@@ -2,6 +2,7 @@ package org.prog3.project.muppetsmail.Client.Controller;
 
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.Client.Model.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Mail;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -44,6 +45,12 @@ public class ConnectionManager {
         NetworkTask nt = new NetworkTask(clientModel, command, lock);
         executors.execute(nt);
     }
+
+    public void runTask(int command, Object lock, Mail mailToBeSent){
+        NetworkTask nt = new NetworkTask(clientModel, command, lock, mailToBeSent);
+        executors.execute(nt);
+    }
+
 
     public void shotDownConnection(){this.executors.shutdown();}
 

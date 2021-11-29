@@ -155,6 +155,8 @@ public class HomeController implements Initializable {
             stage.setTitle("Write new email - Muppets Mail Client");
             stage.setResizable(false);
             stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
+            MailComposerController mailComposerController = loader.getController();
+            mailComposerController.setClientModel(appModel);
 
             MailComposerController composerController = loader.getController();
             composerController.setClientModel(appModel);
