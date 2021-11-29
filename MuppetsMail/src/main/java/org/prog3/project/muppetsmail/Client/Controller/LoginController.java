@@ -58,30 +58,26 @@ public class LoginController implements Initializable {
 
                 try {
                     Files.createDirectories(Paths.get(mailBoxSavePath));
-                    mailBoxReader = new ObjectInputStream(new FileInputStream(mailBoxSavePath + usernameInput.getText() + ".muppetsmail"));
-                    MailBox tmp  =(MailBox) mailBoxReader.readObject();
+                    //retrive mailbox from server
+                    System.out.println("MailBox not found! downloading it from internet");
 
-                    appModel.setUserMailBox(tmp);
-
-                } catch (IOException | ClassNotFoundException e) {
-                        //mailbox was not found! download from server
-                        System.out.println("MailBox not found! downloading it from internet");
-
-                        Object lock = new Object();
-                        appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
-                        try {
-                            synchronized (lock){
-                                lock.wait();
-                            }
-                            //mailbox is available into local storage.
-                            mailBoxReader = new ObjectInputStream(new FileInputStream(mailBoxSavePath + usernameInput.getText() + ".muppetsmail"));
-                            MailBox tmp  =(MailBox) mailBoxReader.readObject();
-                            appModel.setUserMailBox(tmp);
-
-                        } catch (InterruptedException | IOException | ClassNotFoundException ex) {
-                            System.out.println(ex.getMessage());
+                    Object lock = new Object();
+                    appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
+                    try {
+                        synchronized (lock){
+                            lock.wait();
                         }
+                        //mailbox is available into local storage.
+                        mailBoxReader = new ObjectInputStream(new FileInputStream(mailBoxSavePath + usernameInput.getText() + ".muppetsmail"));
+                        MailBox tmp  =(MailBox) mailBoxReader.readObject();
+                        appModel.setUserMailBox(tmp);
 
+                    } catch (InterruptedException | IOException | ClassNotFoundException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+
+                } catch (IOException  e) {
+                    System.out.println(e.getMessage());
 
                 }finally {
                     if(appModel.connectionManager.connectToServer()) {
@@ -93,8 +89,6 @@ public class LoginController implements Initializable {
                         alert.show();
                     }
                 }
-
-
             }else{
                 String MissingFields = "";
                 if(serverInput.getText().equals("")) MissingFields += "Server Endpoint\n\t";
