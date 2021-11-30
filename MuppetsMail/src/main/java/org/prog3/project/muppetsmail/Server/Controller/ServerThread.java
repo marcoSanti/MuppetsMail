@@ -2,7 +2,9 @@ package org.prog3.project.muppetsmail.Server.Controller;
 
 import javafx.application.Platform;
 import org.prog3.project.muppetsmail.Server.Model.Constants;
+import org.prog3.project.muppetsmail.Server.Model.LogEntry;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
+import org.prog3.project.muppetsmail.SharedModel.Delete;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicated;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
@@ -38,7 +40,6 @@ public class ServerThread implements Runnable {
 
     @Override
     public void run() {
-
         try {
             Object input = serverInputStream.readObject();
 
@@ -55,7 +56,6 @@ public class ServerThread implements Runnable {
                     Mail welcomeMail = new Mail("welcomeMail", "welcome@muppetsmail.org", to , "Welcome to muppetsmail! an email Server and client by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
                     tmp.addMail(welcomeMail, Constants.MAILBOX_INBOX_FOLDER);
 
-
                     tmp.saveToDisk();
                     serverModel.addMailBox(tmp); //todo: return an error class to client in case a duplicated exists eve though it should never be fired!
 
@@ -70,6 +70,7 @@ public class ServerThread implements Runnable {
 
                 for(String user: inputMail.getTo()) {
                     if(checkIfUsernameExist(user)) {
+                        //done because otherwise the action done by one is reflected to the other email. By cloning email we avoid this behaviour
                         Mail newMail = inputMail.clone();
                         newMail.setCurrentMailBox(Constants.MAILBOX_INBOX_FOLDER);
                         serverModel.getMailBox(inputMail.getFrom()).addMail(newMail, Constants.MAILBOX_SENT_FOLDER);
@@ -89,6 +90,18 @@ public class ServerThread implements Runnable {
                     //TODO: send a notification to client to update the mailbox!
                 }
 
+            }else if(input.getClass() == Delete.class){
+                Delete wrapper = (Delete) input;
+                Mail mailToDelete = wrapper.getMail();
+                if(mailToDelete.getCurrentMailBox() == 1 || mailToDelete.getCurrentMailBox() == 2) {
+                    addLogToGUI("Trying to move mail to delete", "From" + mailToDelete.getCurrentMailBox() + "to" + 3);
+                    serverModel.getMailBox(mailToDelete.getFrom()).moveTo(mailToDelete, mailToDelete.getCurrentMailBox(), 3);
+                    addLogToGUI("Mail moved from X to deleted", "Success");
+
+                } else {
+                    serverModel.getMailBox(mailToDelete.getFrom()).getDeleted().remove(mailToDelete);
+                }
+                serverModel.getMailBox(mailToDelete.getFrom()).saveToDisk();
             } else {
                 this.addLogToGUI("Received invalid command", "received invalid input of class:" + input.getClass() + " , from remote address: " + socket.getInetAddress());
             }

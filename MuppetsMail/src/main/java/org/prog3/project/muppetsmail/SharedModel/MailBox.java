@@ -67,7 +67,7 @@ public class MailBox implements Serializable {
                 if(deletedObs != null)deletedObs.add(mailToAdd);
                 break;
             default:
-                System.out.println("Mailbox type npt implemented!");
+                System.out.println("Mailbox type not implemented!");
         }
     }
 
@@ -92,55 +92,68 @@ public class MailBox implements Serializable {
     * the operation has to be done twice: once for the local running observable list, and once for the long term storage ArrayList
     */
     public synchronized void moveTo(Mail msg, int from, int dest ){
-        ArrayList<Mail> fromArr;
-        ArrayList<Mail> toArr;
-        ObservableList<Mail> fromArrObs;
-        ObservableList<Mail> toArrObs;
+        ArrayList<Mail> fromArr=null;
+        ArrayList<Mail> toArr=null;
+        ObservableList<Mail> fromArrObs=null;
+        ObservableList<Mail> toArrObs=null;
+
+        System.out.println("FROM: " +from);
+        System.out.println("TO: " +dest);
 
         switch (from){
-            case 1:
-                fromArr = inbox;
-                fromArrObs = inboxObs;
+            case Constants.MAILBOX_INBOX_FOLDER:
+                System.out.println(inbox);
+                inbox.remove(msg);
+                System.out.println(inbox);
+                if(inboxObs != null) inboxObs.remove(msg);
+//                fromArr = inbox;
+//                if(inboxObs != null)fromArrObs = inboxObs;
                 break;
-            case 2:
-                fromArr = sent;
-                fromArrObs = sentObs;
+            case Constants.MAILBOX_SENT_FOLDER:
+                sent.remove(msg);
+                if(sentObs != null) sentObs.remove(msg);
+
+//                fromArr = sent;
+//                if(sentObs != null)fromArrObs = sentObs;
                 break;
-            case 3:
-                fromArr = deleted;
-                fromArrObs = deletedObs;
+            case Constants.MAILBOX_DELETED_FOLDER:
+                deleted.remove(msg);
+                if(deletedObs != null) deletedObs.remove(msg);
+
+//                fromArr = deleted;
+//                if(deletedObs != null)fromArrObs = deletedObs;
                 break;
             default:
                 return;
         }
+
 
         switch (dest){
-            case 1:
-                toArr = inbox;
-                toArrObs = inboxObs;
+            case Constants.MAILBOX_INBOX_FOLDER:
+                inbox.add(msg);
+                if(inboxObs != null) inboxObs.remove(msg);
+
+//                toArr = inbox;
+//                if(inboxObs != null)toArrObs = inboxObs;
                 break;
-            case 2:
-                toArr = sent;
-                toArrObs = sentObs;
+            case Constants.MAILBOX_SENT_FOLDER:
+                sent.add(msg);
+                if(sentObs != null) sentObs.remove(msg);
+
+//                toArr = sent;
+//                if(sentObs != null)toArrObs = sentObs;
                 break;
-            case 3:
-                toArr = deleted;
-                toArrObs = deletedObs;
+            case Constants.MAILBOX_DELETED_FOLDER:
+                deleted.add(msg);
+                if(deletedObs != null) deletedObs.remove(msg);
+
+//                toArr = deleted;
+//                if(deletedObs != null)toArrObs = deletedObs;
                 break;
             default:
                 return;
         }
-
-        if(from == 3){
-            deleted.remove(msg);
-            deletedObs.remove(msg);
-        }
-        else{
-            fromArr.remove(msg);
-            fromArrObs.remove(msg);
-            toArr.add(msg);
-            toArrObs.add(msg);
-        }
+        System.out.println("FINISHED HERE");
     }
 
 
@@ -200,7 +213,6 @@ public class MailBox implements Serializable {
     * Remember: every time we will access a single email from a folder, that operation will have
     * to be synchronized on the mail object itself
     * */
-
 
     public ObservableList<Mail> getInbox() {
         return inboxObs;

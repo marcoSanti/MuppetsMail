@@ -17,10 +17,14 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.ClientApp;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.Client.Model.Constants;
 import org.prog3.project.muppetsmail.Client.ViewObjs.CellFactory;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
+import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -39,6 +43,7 @@ public class HomeController implements Initializable {
     public Button inboxButton;
     public Button trashButton;
     public Button createNewMessageButton;
+    public Button refreshMailbox;
     public ListView<Mail> listViewMessages;
     private ClientModel appModel;
     private Stage loginStage;
@@ -60,26 +65,7 @@ public class HomeController implements Initializable {
                 (observableValue, oldVal, newVal) -> {
                             if((appModel != null) && newVal){
 
-                                appModel.getUserMailBox().generateObservableItems(); //generate the observable items
-
-                                connectionStatusCircle.setFill(Color.LAWNGREEN);
-                                listViewMessages.setItems(appModel.getUserMailBox().getInbox());
-
-                                //TODO: super bug: se mi loggo con user esistente e poi mi locco con user non esistente le mail sono le stesse di quello di prima... capirte come mai
-                                listViewMessages.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                                    @Override
-                                    public void handle(MouseEvent mouseEvent) {
-                                        if(mouseEvent.getClickCount()==2) {
-                                            showMailInfo();
-                                        }
-                                    }
-                                });
-
-                                inboxButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getInbox()));
-                                trashButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getDeleted()));
-                                sentButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getSent()));
-
-                                createNewMessageButton.setOnAction(actionEvent -> showMailComposer() );
+                                setHomeElements();
 
                             }else { //if disconnected or not yet connected
                                 listViewMessages.setItems(null);
@@ -92,6 +78,52 @@ public class HomeController implements Initializable {
                 }
         );
 
+        refreshMailbox.setOnAction(actionEvent -> {
+            this.refreshMailbox();
+        });
+    }
+
+    private void setHomeElements() {
+        appModel.getUserMailBox().generateObservableItems(); //generate the observable items
+
+        connectionStatusCircle.setFill(Color.LAWNGREEN);
+        listViewMessages.setItems(appModel.getUserMailBox().getInbox());
+
+        //TODO: super bug: se mi loggo con user esistente e poi mi locco con user non esistente le mail sono le stesse di quello di prima... capirte come mai
+        listViewMessages.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getClickCount()==2) {
+                    showMailInfo();
+                }
+            }
+        });
+
+        inboxButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getInbox()));
+        trashButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getDeleted()));
+        sentButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getSent()));
+
+        createNewMessageButton.setOnAction(actionEvent -> showMailComposer() );
+    }
+
+    public void refreshMailbox() {
+        MailBox tmp  = null;
+        Object lock = new Object();
+        appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
+        try {
+            synchronized (lock){
+                lock.wait();
+            }
+            ObjectInputStream mailBoxReader = new ObjectInputStream(new FileInputStream("./ClientMailBoxes/" + appModel.getUsername().getValue() + ".muppetsmail"));
+            tmp = (MailBox) mailBoxReader.readObject();
+            tmp.createOutputObjectWriter(tmp.getUsername());
+            tmp.saveToDisk();
+            System.out.println(tmp);
+            appModel.setUserMailBox(tmp);
+            setHomeElements();
+        } catch (IOException | ClassNotFoundException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setLoginStage (Stage lStage){this.loginStage = lStage;}
@@ -101,7 +133,7 @@ public class HomeController implements Initializable {
 
         connectionStatusCircle.setFill(Color.RED);
 
-        listViewMessages.setCellFactory(mailListView -> new CellFactory(appModel.getUserMailBox()));
+        listViewMessages.setCellFactory(mailListView -> new CellFactory(appModel));
 
         logOutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

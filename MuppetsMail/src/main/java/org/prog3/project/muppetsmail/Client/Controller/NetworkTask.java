@@ -2,6 +2,7 @@ package org.prog3.project.muppetsmail.Client.Controller;
 
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.Client.Model.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Delete;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
@@ -9,10 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Objects;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class NetworkTask implements Runnable{
     ObjectOutputStream clientOutputStream;
@@ -21,7 +18,7 @@ public class NetworkTask implements Runnable{
     ClientModel appModel;
     final Object lock;
     int command;
-    Mail mailToBeSent;
+    Mail mail;
 
     public NetworkTask(ClientModel appModel, int command, Object lock) {
         this.appModel = appModel;
@@ -31,9 +28,9 @@ public class NetworkTask implements Runnable{
         this.lock = lock;
     }
 
-    public NetworkTask(ClientModel appModel, int command, Object lock, Mail mailToBeSent) {
+    public NetworkTask(ClientModel appModel, int command, Object lock, Mail mail) {
         this(appModel, command, lock);
-        this.mailToBeSent = mailToBeSent;
+        this.mail = mail;
     }
 
     @Override
@@ -49,12 +46,18 @@ public class NetworkTask implements Runnable{
                         mb.saveToDisk();
                         lock.notifyAll();
                     }
-
                     break;
 
                 case Constants.COMMAND_SEND_MAIL:
                     synchronized (lock) {
-                        clientOutputStream.writeObject(this.mailToBeSent);
+                        clientOutputStream.writeObject(this.mail);
+                        lock.notifyAll();
+                    }
+                    break;
+
+                case Constants.COMMAND_DELETE_MAIL:
+                    synchronized (lock) {
+                        clientOutputStream.writeObject(new Delete(mail));
                         lock.notifyAll();
                     }
                     break;

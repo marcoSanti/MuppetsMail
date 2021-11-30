@@ -7,8 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.ClientApp;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.Client.Model.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
@@ -28,11 +30,12 @@ public class CellFactory extends ListCell<Mail> {
     String dateOut;
     private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
     private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
-
+    private ClientModel appModel;
     private  MailBox userMailbox;
 
-    public CellFactory( MailBox userMailbox){
-        this.userMailbox = userMailbox;
+    public CellFactory(ClientModel appModel){
+        this.userMailbox = appModel.getUserMailBox();
+        this.appModel = appModel;
     }
 
     @Override
@@ -53,7 +56,6 @@ public class CellFactory extends ListCell<Mail> {
                 e.printStackTrace();
             }
 
-
             Instant now = Instant.now();
             boolean isWithinPrior24Hours = ( ! mail.getDate().toInstant().isBefore( now.minus( 24 , ChronoUnit.HOURS) ) ) && ( mail.getDate().toInstant().isBefore( now )) ;
 
@@ -70,22 +72,30 @@ public class CellFactory extends ListCell<Mail> {
             ImageButton forwardMail = new ImageButton(new Image(ClientApp.class.getResource("forward.png").toString()), 27 ,27);
             ImageButton deleteMail = new ImageButton(new Image(ClientApp.class.getResource("bin.png").toString()), 30 ,30);
 
-            forwardMail.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    //copiare la mail e inviarla a qualcun altro!
-                }
+            forwardMail.setOnAction(actionEvent -> {
+                //TODO: copiare la mail e inviarla a qualcun altro!
             });
 
-            deleteMail.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    synchronized (mail) {
+            deleteMail.setOnAction(actionEvent -> { //TODO: capire come mai il sinchronized si blocca
+
+                Object lock = new Object();
+
+                appModel.connectionManager.runTask(Constants.COMMAND_DELETE_MAIL, lock, mail);
+                synchronized (lock){
+                    try {
+                        lock.wait();
+                        // synchronized (mail) {
                         int oldMailBox = mail.getCurrentMailBox();
                         mail.setCurrentMailBox(3);
                         userMailbox.moveTo(mail, oldMailBox, 3);
+                        //}
+
+                    } catch (InterruptedException  e) {
+                        e.printStackTrace();
                     }
                 }
+
+
             });
 
 
