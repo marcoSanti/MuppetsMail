@@ -2,6 +2,7 @@ package org.prog3.project.muppetsmail.SharedModel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import org.prog3.project.muppetsmail.Server.Model.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
@@ -50,22 +51,23 @@ public class MailBox implements Serializable {
      * @param mailToAdd
      * @param mailBoxType can be 1: inbox, 2: sent, 3: deleted
      */
-    public synchronized void addMail(Mail mailToAdd, int mailBoxType) throws MailBoxNotFoundException {
+    public synchronized void addMail(Mail mailToAdd, int mailBoxType){
+
         switch (mailBoxType) {
-            case 1:
+            case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.add(mailToAdd);
-                inboxObs.add(mailToAdd);
+                if(inboxObs != null) inboxObs.add(mailToAdd);
                 break;
-            case 2:
+            case Constants.MAILBOX_SENT_FOLDER:
                 sent.add(mailToAdd);
-                sentObs.add(mailToAdd);
+                if(sentObs != null)sentObs.add(mailToAdd);
                 break;
-            case 3:
+            case Constants.MAILBOX_DELETED_FOLDER:
                 deleted.add(mailToAdd);
-                deletedObs.add(mailToAdd);
+                if(deletedObs != null)deletedObs.add(mailToAdd);
                 break;
             default:
-                throw new MailBoxNotFoundException("LOG ERROR: MAILBOX WIHT ID: "+mailBoxType+" NOT VALID");
+                System.out.println("Mailbox type npt implemented!");
         }
     }
 

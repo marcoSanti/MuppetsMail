@@ -59,7 +59,7 @@ public class LoginController implements Initializable {
                 try {
                     Files.createDirectories(Paths.get(mailBoxSavePath));
                     //retrive mailbox from server
-                    System.out.println("MailBox not found! downloading it from internet");
+                    System.out.println("Retriving mailbox from internet");
 
                     Object lock = new Object();
                     appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);

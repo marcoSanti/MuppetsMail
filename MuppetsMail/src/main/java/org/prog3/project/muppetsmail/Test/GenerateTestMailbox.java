@@ -45,7 +45,7 @@ public class GenerateTestMailbox {
                     mbox.addMail(new Mail("s"+i, "testEmail", to, "Test email of deleted", "deleted Test"+i+ " for " + s, 3), 3);
                 }
                 mbox.saveToDisk();
-            }catch(IOException | MailBoxNotFoundException e){
+            }catch(IOException  e){
                 e.printStackTrace();
             }
         }

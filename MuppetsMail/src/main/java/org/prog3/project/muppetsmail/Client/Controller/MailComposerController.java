@@ -72,7 +72,7 @@ public class MailComposerController {
                     Stage stage = (Stage) mailSendButton.getScene().getWindow();
                     stage.close();
 
-                } catch (InterruptedException | MailBoxNotFoundException e) {
+                } catch (InterruptedException  e) {
                     e.printStackTrace();
                 }
             }

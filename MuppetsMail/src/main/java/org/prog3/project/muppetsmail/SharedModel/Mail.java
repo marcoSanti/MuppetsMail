@@ -69,4 +69,18 @@ public class Mail implements Serializable {
             return "[" + dtfToday.format(date) + "]" + "    from: " + from + "    subject: " + subject;
         }
     }
+
+    public Mail clone(){
+        String mailIdClone = new String(this.mailId);
+        String fromClone = new String(this.from);
+        ArrayList<String> toClone = new ArrayList<>();
+        for(String ToCloneElement : to){
+            toClone.add(new String(ToCloneElement));
+        }
+        String messageClone = new String(this.message);
+        String subjectClone = new String(this.subject);
+        int currentMbClone = this.currentMailBox;
+
+        return new Mail(mailIdClone, fromClone, toClone, messageClone, subjectClone, currentMbClone);
+    }
 }

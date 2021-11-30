@@ -114,6 +114,7 @@ public class ServerController implements Initializable {
                     mailBoxReader = new ObjectInputStream(new FileInputStream(f));
                     MailBox tmp = (MailBox) mailBoxReader.readObject();
                     tmp.createOutputObjectWriter(f.toString()); //create the output writer once the class has been loaded
+
                     model.addMailBox(tmp);
                     model.addLog("Mailbox loaded", "Loaded " + f.getName().substring(0, f.getName().indexOf(".muppetsmail")) + " mailbox, from file " + f.toString());
                 } catch (IOException | ClassNotFoundException | MailBoxNameDuplicated e) {
