@@ -71,6 +71,14 @@ public class NetworkTask implements Runnable{
             synchronized (lock){
                 lock.notifyAll();
             }
+        }finally {
+            try {
+                this.socket.shutdownInput();
+                this.socket.shutdownOutput();
+                this.socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

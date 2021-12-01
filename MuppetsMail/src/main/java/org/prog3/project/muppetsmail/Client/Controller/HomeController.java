@@ -107,7 +107,7 @@ public class HomeController implements Initializable {
     }
 
     public void refreshMailbox() {
-        MailBox tmp  = null;
+        MailBox tmp;
         Object lock = new Object();
         appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
         try {
@@ -116,9 +116,9 @@ public class HomeController implements Initializable {
             }
             ObjectInputStream mailBoxReader = new ObjectInputStream(new FileInputStream("./ClientMailBoxes/" + appModel.getUsername().getValue() + ".muppetsmail"));
             tmp = (MailBox) mailBoxReader.readObject();
-            tmp.createOutputObjectWriter(tmp.getUsername());
+            tmp.createOutputObjectWriter("./ClientMailBoxes/" + tmp.getUsername() + ".muppetsmail");
             tmp.saveToDisk();
-            System.out.println(tmp);
+            System.out.println("TMP IN REFRESH: " + tmp);
             appModel.setUserMailBox(tmp);
             setHomeElements();
         } catch (IOException | ClassNotFoundException | InterruptedException e) {

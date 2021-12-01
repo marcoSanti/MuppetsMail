@@ -32,8 +32,10 @@ public class ConnectionManager {
     public boolean connectToServer() {
         boolean connectionEstablished = false;
         try {
-            socket = new Socket("127.0.0.1", port);
+            socket = new Socket(server, port);
             connectionEstablished = true;
+            socket.shutdownInput();
+            socket.shutdownOutput();
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

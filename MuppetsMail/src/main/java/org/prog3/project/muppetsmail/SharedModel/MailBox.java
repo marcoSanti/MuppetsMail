@@ -28,7 +28,6 @@ public class MailBox implements Serializable {
     * At the beginning, when the mailbox is created, only the user id is required
     * */
     public MailBox(String username) {
-        this.writer = writer;
         this.username = username;
         this.inbox = new ArrayList<>();
         this.sent = new ArrayList<>();
@@ -40,10 +39,10 @@ public class MailBox implements Serializable {
     /*
     * This method allows to crerate a file output stream,
     * to allow the class to be savedto local disk.
-    * It requires the parameter fileName wich is the current fileName (with absolute / relative path)
+    * It requires the parameter fileWriterPath wich is the current fileWriterPath (with absolute / relative path)
     * */
-    public synchronized void createOutputObjectWriter(String fileName) throws IOException {
-        this.fileWriterPath = fileName;
+    public synchronized void createOutputObjectWriter(String fileWriterPath) throws IOException {
+        this.fileWriterPath = fileWriterPath;
     }
 
 
@@ -92,36 +91,21 @@ public class MailBox implements Serializable {
     * the operation has to be done twice: once for the local running observable list, and once for the long term storage ArrayList
     */
     public synchronized void moveTo(Mail msg, int from, int dest ){
-        ArrayList<Mail> fromArr=null;
-        ArrayList<Mail> toArr=null;
-        ObservableList<Mail> fromArrObs=null;
-        ObservableList<Mail> toArrObs=null;
-
-        System.out.println("FROM: " +from);
-        System.out.println("TO: " +dest);
-
         switch (from){
             case Constants.MAILBOX_INBOX_FOLDER:
-                System.out.println(inbox);
                 inbox.remove(msg);
-                System.out.println(inbox);
                 if(inboxObs != null) inboxObs.remove(msg);
-//                fromArr = inbox;
-//                if(inboxObs != null)fromArrObs = inboxObs;
+                System.out.println("INBOXOBS: " + inboxObs);
                 break;
             case Constants.MAILBOX_SENT_FOLDER:
                 sent.remove(msg);
                 if(sentObs != null) sentObs.remove(msg);
 
-//                fromArr = sent;
-//                if(sentObs != null)fromArrObs = sentObs;
                 break;
             case Constants.MAILBOX_DELETED_FOLDER:
                 deleted.remove(msg);
                 if(deletedObs != null) deletedObs.remove(msg);
 
-//                fromArr = deleted;
-//                if(deletedObs != null)fromArrObs = deletedObs;
                 break;
             default:
                 return;
@@ -131,29 +115,22 @@ public class MailBox implements Serializable {
         switch (dest){
             case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.add(msg);
-                if(inboxObs != null) inboxObs.remove(msg);
+                if(inboxObs != null) inboxObs.add(msg);
 
-//                toArr = inbox;
-//                if(inboxObs != null)toArrObs = inboxObs;
                 break;
             case Constants.MAILBOX_SENT_FOLDER:
                 sent.add(msg);
-                if(sentObs != null) sentObs.remove(msg);
+                if(sentObs != null) sentObs.add(msg);
 
-//                toArr = sent;
-//                if(sentObs != null)toArrObs = sentObs;
                 break;
             case Constants.MAILBOX_DELETED_FOLDER:
                 deleted.add(msg);
-                if(deletedObs != null) deletedObs.remove(msg);
+                if(deletedObs != null) deletedObs.add(msg);
 
-//                toArr = deleted;
-//                if(deletedObs != null)toArrObs = deletedObs;
                 break;
             default:
                 return;
         }
-        System.out.println("FINISHED HERE");
     }
 
 
@@ -162,13 +139,13 @@ public class MailBox implements Serializable {
     * */
     public void generateObservableItems(){
         inboxObs = FXCollections.observableArrayList();
-        for(Mail m : inbox) inboxObs.add(m);
+        inboxObs.addAll(inbox);
 
         sentObs = FXCollections.observableArrayList();
-        for(Mail m : sent) sentObs.add(m);
+        sentObs.addAll(sent);
 
         deletedObs = FXCollections.observableArrayList();
-        for(Mail m : deleted) deletedObs.add(m);
+        deletedObs.addAll(deleted);
     }
 
     /*

@@ -19,28 +19,20 @@ import java.util.ArrayList;
 
 public class ServerThread implements Runnable {
     private Socket socket;
-    ObjectInputStream serverInputStream = null;
-    ObjectOutputStream serverOutputStream = null;
     ServerModel serverModel;
 
     public ServerThread(Socket socket, ServerModel model) {
         this.socket = socket;
-        this.initialiseStreams();
         this.serverModel = model;
     }
 
-    private void initialiseStreams() {
-        try {
-            serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            serverInputStream = new ObjectInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     @Override
     public void run() {
         try {
+            ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
             Object input = serverInputStream.readObject();
 
             if (input.getClass() == String.class) {
@@ -101,7 +93,9 @@ public class ServerThread implements Runnable {
                 } else {
                     serverModel.getMailBox(mailToDelete.getFrom()).getDeleted().remove(mailToDelete);
                 }
+                System.out.println("BEFORE: " + serverModel.getMailBox(mailToDelete.getFrom()));
                 serverModel.getMailBox(mailToDelete.getFrom()).saveToDisk();
+                System.out.println("AFTER: " + serverModel.getMailBox(mailToDelete.getFrom()));
             } else {
                 this.addLogToGUI("Received invalid command", "received invalid input of class:" + input.getClass() + " , from remote address: " + socket.getInetAddress());
             }
