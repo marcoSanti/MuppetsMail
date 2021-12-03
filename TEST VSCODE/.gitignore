@@ -1,0 +1,4 @@
+*.class
+*.muppetsmail
+*.DS_Store
+**/target/
