@@ -1,8 +1,5 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
-
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -121,6 +118,7 @@ public class HomeController implements Initializable {
             System.out.println("TMP IN REFRESH: " + tmp);
             appModel.setUserMailBox(tmp);
             setHomeElements();
+            mailBoxReader.close();
         } catch (IOException | ClassNotFoundException | InterruptedException e) {
             e.printStackTrace();
         }

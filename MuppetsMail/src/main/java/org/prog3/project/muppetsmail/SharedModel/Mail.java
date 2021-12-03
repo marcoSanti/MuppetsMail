@@ -62,7 +62,8 @@ public class Mail implements Serializable {
     @Override
     public String toString() {
         Date today = new Date();
-        long todayDiff = date.getTime() - today.getDate();
+        
+        long todayDiff = date.getTime() - today.getTime();
         if(TimeUnit.HOURS.toHours(todayDiff) > 24){
             return "[" + dtfOld.format(date) + "]" + "    from: " + from + "    subject: " + subject;
         }else{

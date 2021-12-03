@@ -2,18 +2,15 @@ package org.prog3.project.muppetsmail.Server.Controller;
 
 import javafx.application.Platform;
 import org.prog3.project.muppetsmail.Server.Model.Constants;
-import org.prog3.project.muppetsmail.Server.Model.LogEntry;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
 import org.prog3.project.muppetsmail.SharedModel.Delete;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicated;
-import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 

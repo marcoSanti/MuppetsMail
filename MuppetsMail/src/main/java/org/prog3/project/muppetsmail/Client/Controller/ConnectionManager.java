@@ -5,15 +5,10 @@ import org.prog3.project.muppetsmail.Client.Model.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.constant.Constable;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
+
 
 public class ConnectionManager {
     private String server;

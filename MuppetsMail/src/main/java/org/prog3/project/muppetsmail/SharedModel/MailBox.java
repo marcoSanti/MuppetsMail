@@ -3,7 +3,6 @@ package org.prog3.project.muppetsmail.SharedModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.Server.Model.Constants;
-import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
 import java.io.FileOutputStream;

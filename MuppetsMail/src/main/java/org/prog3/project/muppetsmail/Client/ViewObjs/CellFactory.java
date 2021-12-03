@@ -1,13 +1,10 @@
 package org.prog3.project.muppetsmail.Client.ViewObjs;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.ClientApp;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.Client.Model.Constants;
@@ -19,8 +16,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class CellFactory extends ListCell<Mail> {
     public Label mailDateLabel;

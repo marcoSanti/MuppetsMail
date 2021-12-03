@@ -1,7 +1,7 @@
 module org.prog3.project.muppetsmail {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires javafx.graphics;
+    requires transitive javafx.controls;
+    requires transitive javafx.fxml;
+    requires transitive javafx.graphics;
 
 
     opens org.prog3.project.muppetsmail.Client to javafx.fxml;

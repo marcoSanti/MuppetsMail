@@ -4,8 +4,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.Client.Controller.ConnectionManager;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 

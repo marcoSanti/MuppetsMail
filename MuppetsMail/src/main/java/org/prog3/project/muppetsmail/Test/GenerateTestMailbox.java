@@ -1,20 +1,15 @@
 package org.prog3.project.muppetsmail.Test;
 
-
-import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class GenerateTestMailbox {
     public static void main(String[] args) {
-        ArrayList<MailBox> mailboxes = new ArrayList<>();
         ArrayList<String> usernames= new ArrayList<>();
         usernames.add("Marco");
         usernames.add("Nicolo");

@@ -14,13 +14,9 @@ import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundExcep
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ServerController implements Initializable {

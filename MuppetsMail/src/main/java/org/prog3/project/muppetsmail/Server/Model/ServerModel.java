@@ -3,7 +3,6 @@ package org.prog3.project.muppetsmail.Server.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicated;
-import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.util.ArrayList;

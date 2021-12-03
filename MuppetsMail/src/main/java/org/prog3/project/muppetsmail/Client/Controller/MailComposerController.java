@@ -1,23 +1,13 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.Client.Model.Constants;
-import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNotFoundException;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 
-import java.lang.reflect.Array;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ResourceBundle;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MailComposerController {
 
