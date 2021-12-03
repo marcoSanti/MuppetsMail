@@ -40,9 +40,12 @@ public class ServerThreadManager implements Runnable {
             server = new ServerSocket(1234);
             this.addLogToGUI("Server started on port 1234");
             this.isRunning = true;
-            while(true){
+            while(isRunning){
                 Socket socket = server.accept();
-                threadPool.execute(new ServerThread(socket, serverModel));
+//                threadPool.execute(new ServerThread(socket, serverModel));
+                ServerThread serverTr = new ServerThread(socket, serverModel);
+                serverTr.run();
+                System.out.println("task finished");
             }
         } catch (IOException e) {
             this.addLogToGUI(e.getMessage(), e.toString());

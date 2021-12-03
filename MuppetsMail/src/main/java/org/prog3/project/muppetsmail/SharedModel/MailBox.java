@@ -91,6 +91,7 @@ public class MailBox implements Serializable {
     * the operation has to be done twice: once for the local running observable list, and once for the long term storage ArrayList
     */
     public synchronized void moveTo(Mail msg, int from, int dest ){
+        System.out.println("Here");
         switch (from){
             case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.remove(msg);

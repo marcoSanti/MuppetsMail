@@ -30,8 +30,11 @@ public class ServerThread implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println("Getting input/output streams for socket: " + socket.getPort());
             ObjectInputStream serverInputStream = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            serverOutputStream.flush();
+            System.out.println("Got input/output");
 
             Object input = serverInputStream.readObject();
 

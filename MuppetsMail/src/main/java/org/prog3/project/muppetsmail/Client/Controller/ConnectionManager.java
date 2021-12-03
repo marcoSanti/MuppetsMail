@@ -36,9 +36,15 @@ public class ConnectionManager {
             connectionEstablished = true;
             socket.shutdownInput();
             socket.shutdownOutput();
-            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
         return connectionEstablished;
     }
