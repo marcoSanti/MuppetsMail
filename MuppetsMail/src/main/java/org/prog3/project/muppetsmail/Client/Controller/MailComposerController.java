@@ -3,7 +3,7 @@ package org.prog3.project.muppetsmail.Client.Controller;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
-import org.prog3.project.muppetsmail.Client.Model.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 
 import java.util.ArrayList;
@@ -58,9 +58,9 @@ public class MailComposerController {
             synchronized (lock){
                 try {
                     lock.wait();
-                    appModel.getUserMailBox().addMail(mailToBeSent, Constants.MAILBOX_SENT_FOLDER);
                     Stage stage = (Stage) mailSendButton.getScene().getWindow();
                     stage.close();
+                    //TODO: download again mailbox folder
 
                 } catch (InterruptedException  e) {
                     e.printStackTrace();

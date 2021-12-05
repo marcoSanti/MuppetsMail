@@ -1,17 +1,18 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
-import org.prog3.project.muppetsmail.Client.Model.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Delete;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
-import org.prog3.project.muppetsmail.SharedModel.MailBox;
+import org.prog3.project.muppetsmail.SharedModel.MailWrapper;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
-public class NetworkTask implements Runnable{
+public class NetworkTask implements Runnable {
     ObjectOutputStream clientOutputStream;
     ObjectInputStream clientInputStream;
     Socket socket = null;
@@ -38,12 +39,11 @@ public class NetworkTask implements Runnable{
 
         try {
             switch (command) {
-                case Constants.COMMAND_SEND_USERNAME:
-                    synchronized (lock){
-                        clientOutputStream.writeObject(appModel.getUsername().getValue());
-                        MailBox mb = (MailBox) clientInputStream.readObject();
-                        mb.createOutputObjectWriter("./ClientMailBoxes/" + mb.getUsername() + ".muppetsmail");
-                        mb.saveToDisk();
+                case Constants.COMMAND_FETCH_INBOX:
+                case Constants.COMMAND_FETCH_DELETE:
+                case Constants.COMMAND_FETCH_SENT:
+                    synchronized (lock) {
+                        this.fetchMailBox(command);
                         lock.notifyAll();
                     }
                     break;
@@ -66,12 +66,12 @@ public class NetworkTask implements Runnable{
 
                     break;
             }
-        }catch (IOException | ClassNotFoundException e){
+        } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
-            synchronized (lock){
+            synchronized (lock) {
                 lock.notifyAll();
             }
-        }finally {
+        } finally {
             try {
                 this.socket.shutdownInput();
                 this.socket.shutdownOutput();
@@ -80,6 +80,12 @@ public class NetworkTask implements Runnable{
                 e.printStackTrace();
             }
         }
+    }
+
+    private void fetchMailBox(int type) throws IOException, ClassNotFoundException {
+        clientOutputStream.writeObject(new MailWrapper(type, appModel.getUsername().get()));
+        MailWrapper mw = (MailWrapper) clientInputStream.readObject();
+        appModel.setCurrentMailFolder(ClientModel.convertArrayListToObservableList(mw.getMailsFolder()));
     }
 
     private void initialiseSocket(String endpoint, String port) {

@@ -2,7 +2,6 @@ package org.prog3.project.muppetsmail.SharedModel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.prog3.project.muppetsmail.Server.Model.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
 import java.io.FileOutputStream;
@@ -17,7 +16,6 @@ import java.util.List;
 public class MailBox implements Serializable {
     private ArrayList<Mail> inbox, sent,  deleted; //vars used to store indefinitely informations as well as when they are transported between hosts
     private String username;
-    private transient ObservableList<Mail> sentObs, deletedObs, inboxObs; //variable used to store elements while app is running
 
     //this must be transient as it is not serializable and must be allocated by every client each time that it requires to
     //to enable, once the class is read, to set a writer, the method setObjectWriter is created
@@ -54,15 +52,12 @@ public class MailBox implements Serializable {
         switch (mailBoxType) {
             case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.add(mailToAdd);
-                if(inboxObs != null) inboxObs.add(mailToAdd);
                 break;
             case Constants.MAILBOX_SENT_FOLDER:
                 sent.add(mailToAdd);
-                if(sentObs != null)sentObs.add(mailToAdd);
                 break;
             case Constants.MAILBOX_DELETED_FOLDER:
                 deleted.add(mailToAdd);
-                if(deletedObs != null)deletedObs.add(mailToAdd);
                 break;
             default:
                 System.out.println("Mailbox type not implemented!");
@@ -94,18 +89,12 @@ public class MailBox implements Serializable {
         switch (from){
             case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.remove(msg);
-                if(inboxObs != null) inboxObs.remove(msg);
-                System.out.println("INBOXOBS: " + inboxObs);
                 break;
             case Constants.MAILBOX_SENT_FOLDER:
                 sent.remove(msg);
-                if(sentObs != null) sentObs.remove(msg);
-
                 break;
             case Constants.MAILBOX_DELETED_FOLDER:
                 deleted.remove(msg);
-                if(deletedObs != null) deletedObs.remove(msg);
-
                 break;
             default:
                 return;
@@ -115,17 +104,14 @@ public class MailBox implements Serializable {
         switch (dest){
             case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.add(msg);
-                if(inboxObs != null) inboxObs.add(msg);
 
                 break;
             case Constants.MAILBOX_SENT_FOLDER:
                 sent.add(msg);
-                if(sentObs != null) sentObs.add(msg);
 
                 break;
             case Constants.MAILBOX_DELETED_FOLDER:
                 deleted.add(msg);
-                if(deletedObs != null) deletedObs.add(msg);
 
                 break;
             default:
@@ -134,19 +120,6 @@ public class MailBox implements Serializable {
     }
 
 
-    /*this method generates the observaleList that will be shown into the
-    listview.
-    * */
-    public void generateObservableItems(){
-        inboxObs = FXCollections.observableArrayList();
-        inboxObs.addAll(inbox);
-
-        sentObs = FXCollections.observableArrayList();
-        sentObs.addAll(sent);
-
-        deletedObs = FXCollections.observableArrayList();
-        deletedObs.addAll(deleted);
-    }
 
     /*
     * This method allows to delete messages older than days
@@ -191,16 +164,16 @@ public class MailBox implements Serializable {
     * to be synchronized on the mail object itself
     * */
 
-    public ObservableList<Mail> getInbox() {
-        return inboxObs;
+    public ArrayList<Mail> getInbox() {
+        return inbox;
     }
 
-    public ObservableList<Mail> getSent() {
-        return sentObs;
+    public ArrayList<Mail> getSent() {
+        return sent;
     }
 
-    public ObservableList<Mail> getDeleted() {
-        return deletedObs;
+    public ArrayList<Mail> getDeleted() {
+        return deleted;
     }
 }
 

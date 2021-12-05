@@ -14,14 +14,11 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.ClientApp;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
-import org.prog3.project.muppetsmail.Client.Model.Constants;
 import org.prog3.project.muppetsmail.Client.ViewObjs.CellFactory;
+import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
-
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -81,10 +78,8 @@ public class HomeController implements Initializable {
     }
 
     private void setHomeElements() {
-        appModel.getUserMailBox().generateObservableItems(); //generate the observable items
-
         connectionStatusCircle.setFill(Color.LAWNGREEN);
-        listViewMessages.setItems(appModel.getUserMailBox().getInbox());
+        listViewMessages.setItems(appModel.getCurrentMailFolder());
 
         //TODO: super bug: se mi loggo con user esistente e poi mi locco con user non esistente le mail sono le stesse di quello di prima... capirte come mai
         listViewMessages.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -96,30 +91,46 @@ public class HomeController implements Initializable {
             }
         });
 
-        inboxButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getInbox()));
-        trashButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getDeleted()));
-        sentButton.setOnAction(actionEvent -> listViewMessages.setItems(appModel.getUserMailBox().getSent()));
+        //TODO: download the right folder 
+        inboxButton.setOnAction(actionEvent -> {
+            updateCurrentMailFolder(Constants.COMMAND_FETCH_INBOX);
+    
+        });
+        trashButton.setOnAction(actionEvent -> {
+            updateCurrentMailFolder(Constants.COMMAND_FETCH_DELETE);
+            
+        });
+        sentButton.setOnAction(actionEvent -> {
+            updateCurrentMailFolder(Constants.COMMAND_FETCH_SENT);
+        });
 
         createNewMessageButton.setOnAction(actionEvent -> showMailComposer() );
+    }
+
+    private void updateCurrentMailFolder(int mailsFolderType) {
+        Object lock = new Object();
+        appModel.connectionManager.runTask(mailsFolderType, lock);
+        try {
+            synchronized (lock) {
+                lock.wait();
+            }
+            listViewMessages.setItems(appModel.getCurrentMailFolder());
+        } catch (InterruptedException ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     public void refreshMailbox() {
         MailBox tmp;
         Object lock = new Object();
-        appModel.connectionManager.runTask(Constants.COMMAND_SEND_USERNAME, lock);
+        //TODO: change the command because we're refreshing the inbox in this way
+        appModel.connectionManager.runTask(Constants.COMMAND_FETCH_INBOX, lock);
         try {
             synchronized (lock){
                 lock.wait();
             }
-            ObjectInputStream mailBoxReader = new ObjectInputStream(new FileInputStream("./ClientMailBoxes/" + appModel.getUsername().getValue() + ".muppetsmail"));
-            tmp = (MailBox) mailBoxReader.readObject();
-            tmp.createOutputObjectWriter("./ClientMailBoxes/" + tmp.getUsername() + ".muppetsmail");
-            tmp.saveToDisk();
-            System.out.println("TMP IN REFRESH: " + tmp);
-            appModel.setUserMailBox(tmp);
-            setHomeElements();
-            mailBoxReader.close();
-        } catch (IOException | ClassNotFoundException | InterruptedException e) {
+            //TODO: riscaricare la mailbox
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

@@ -7,10 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import org.prog3.project.muppetsmail.Client.ClientApp;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
-import org.prog3.project.muppetsmail.Client.Model.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
-import org.prog3.project.muppetsmail.SharedModel.MailBox;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,10 +24,8 @@ public class CellFactory extends ListCell<Mail> {
     private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
     private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
     private ClientModel appModel;
-    private  MailBox userMailbox;
 
     public CellFactory(ClientModel appModel){
-        this.userMailbox = appModel.getUserMailBox();
         this.appModel = appModel;
     }
 
@@ -78,11 +74,12 @@ public class CellFactory extends ListCell<Mail> {
                 appModel.connectionManager.runTask(Constants.COMMAND_DELETE_MAIL, lock, mail);
                 synchronized (lock){
                     try {
+                        //TODO: ELIMINARE EMAIL
                         lock.wait();
                         // synchronized (mail) {
-                        int oldMailBox = mail.getCurrentMailBox();
+                        
                         mail.setCurrentMailBox(3);
-                        userMailbox.moveTo(mail, oldMailBox, 3);
+                        //userMailbox.moveTo(mail, oldMailBox, 3);
                         //}
 
                     } catch (InterruptedException  e) {

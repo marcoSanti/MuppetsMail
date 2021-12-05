@@ -9,7 +9,6 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -38,9 +37,9 @@ public class MailViewerController implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 synchronized (mail) {
-                    int oldMailBox = mail.getCurrentMailBox();
+                    
                     mail.setCurrentMailBox(3);
-                    appModel.getUserMailBox().moveTo(mail, oldMailBox, 3);
+                    //TODO: DELETE EMAIL
                 }
                 Stage stage = (Stage) showMailFrom.getScene().getWindow();
                 stage.close();
