@@ -1,6 +1,9 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,6 +28,16 @@ public class Mail implements Serializable {
         this.subject = subject;
         this.date = new Date();
         this.currentMailBox = currentMailBox;
+
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            byte[] hash = digest.digest(new String(from+to.toString()+message+subject+date.toString()).getBytes(StandardCharsets.UTF_8));
+            mailId = bytesToHex(hash);
+            System.out.println(mailId);
+        }catch(NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+
     }
 
     public int getCurrentMailBox() {
@@ -71,7 +84,6 @@ public class Mail implements Serializable {
     }
 
     public Mail clone(){
-        String mailIdClone = new String(this.mailId);
         String fromClone = new String(this.from);
         ArrayList<String> toClone = new ArrayList<>();
         for(String ToCloneElement : to){
@@ -82,5 +94,18 @@ public class Mail implements Serializable {
         int currentMbClone = this.currentMailBox;
 
         return new Mail( fromClone, toClone, messageClone, subjectClone, currentMbClone);
+    }
+
+    //converts bytes to string. used to generate the mail id!
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }

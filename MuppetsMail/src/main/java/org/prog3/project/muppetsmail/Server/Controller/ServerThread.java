@@ -57,7 +57,11 @@ public class ServerThread implements Runnable {
                     int mailBoxFolderTmp = input.getMailToSend().getCurrentMailBox();
                     
                     mailBox.moveTo(input.getMailToSend(), mailBoxFolderTmp, Constants.MAILBOX_DELETED_FOLDER);
-                    input.getMailToSend().setCurrentMailBox(Constants.MAILBOX_DELETED_FOLDER);
+                    try{
+                        mailBox.saveToDisk();
+                    }catch(IOException e){
+                        e.printStackTrace();
+                    }
                     
                     break;
                 default:

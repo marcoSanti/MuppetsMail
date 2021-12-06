@@ -86,40 +86,47 @@ public class MailBox implements Serializable {
     */
     public synchronized void moveTo(Mail msg, int from, int dest ){
         
-        // switch (from){
-        //     case Constants.MAILBOX_INBOX_FOLDER:
-        //         inbox.remove(msg);
-        //         break;
-        //     case Constants.MAILBOX_SENT_FOLDER:
-        //         sent.remove(msg);
-        //         break;
-        //     case Constants.MAILBOX_DELETED_FOLDER:
-        //         deleted.remove(msg);
-        //         break;
-        //     default:
-        //         return;
-        // }
+       Mail deleteMail = null;
+       boolean mailWasInBin = false;
 
-        System.out.println("Mail was in inbox: " + this.inbox.remove(msg));
-        System.out.println("Mail was in sent: " + this.sent.remove(msg));
-        System.out.println("Mail was in deleted: " + this.deleted.remove(msg));
+       checkForDeleteMail(msg, inbox, deleteMail);
+       checkForDeleteMail(msg, sent, deleteMail);
+       mailWasInBin = checkForDeleteMail(msg, deleted, deleteMail);
 
         switch (dest){
             case Constants.MAILBOX_INBOX_FOLDER:
                 inbox.add(msg);
-
                 break;
+
             case Constants.MAILBOX_SENT_FOLDER:
                 sent.add(msg);
-
                 break;
+
             case Constants.MAILBOX_DELETED_FOLDER:
-                deleted.add(msg);
-
+                if(!mailWasInBin)deleted.add(msg);
                 break;
+
             default:
                 return;
         }
+        
+    }
+
+
+    private boolean checkForDeleteMail(Mail mail, ArrayList<Mail> folder, Mail deleteMail){
+        if(deleteMail == null){
+            for(Mail m : folder){
+                if(m.getMailId().equals(mail.getMailId())){
+                    deleteMail = m;
+                    break;
+                }
+            }
+            if(deleteMail != null){
+                deleteMail.setCurrentMailBox(Constants.MAILBOX_DELETED_FOLDER);
+                return folder.remove(deleteMail);
+            }
+        }
+        return false;
     }
     
 
