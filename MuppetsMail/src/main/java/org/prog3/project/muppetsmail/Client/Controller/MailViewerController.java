@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
+import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,11 +37,20 @@ public class MailViewerController implements Initializable {
         deleteMailButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                synchronized (mail) {
-                    
-                    mail.setCurrentMailBox(3);
-                    //TODO: DELETE EMAIL
+                Object lock = new Object();
+
+                appModel.connectionManager.runTask(Constants.COMMAND_DELETE_MAIL, lock, mail);
+                synchronized (lock){
+                    try {
+                       
+                        lock.wait();
+                        appModel.getCurrentMailFolder().remove(mail);
+                        
+                    } catch (InterruptedException  e) {
+                        e.printStackTrace();
+                    }
                 }
+
                 Stage stage = (Stage) showMailFrom.getScene().getWindow();
                 stage.close();
 

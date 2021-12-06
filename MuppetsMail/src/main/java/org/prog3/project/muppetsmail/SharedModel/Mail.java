@@ -18,8 +18,7 @@ public class Mail implements Serializable {
     private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
     private int currentMailBox;
 
-    public Mail(String mailId, String from, ArrayList<String> to, String message, String subject, int currentMailBox) {
-        this.mailId = mailId;
+    public Mail(String from, ArrayList<String> to, String message, String subject, int currentMailBox) {
         this.from = from;
         this.to = to;
         this.message = message;
@@ -82,6 +81,6 @@ public class Mail implements Serializable {
         String subjectClone = new String(this.subject);
         int currentMbClone = this.currentMailBox;
 
-        return new Mail(mailIdClone, fromClone, toClone, messageClone, subjectClone, currentMbClone);
+        return new Mail( fromClone, toClone, messageClone, subjectClone, currentMbClone);
     }
 }

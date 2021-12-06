@@ -67,21 +67,17 @@ public class CellFactory extends ListCell<Mail> {
                 //TODO: copiare la mail e inviarla a qualcun altro!
             });
 
-            deleteMail.setOnAction(actionEvent -> { //TODO: capire come mai il sinchronized si blocca
+            deleteMail.setOnAction(actionEvent -> { 
 
                 Object lock = new Object();
 
                 appModel.connectionManager.runTask(Constants.COMMAND_DELETE_MAIL, lock, mail);
                 synchronized (lock){
                     try {
-                        //TODO: ELIMINARE EMAIL
+                       
                         lock.wait();
-                        // synchronized (mail) {
+                        appModel.getCurrentMailFolder().remove(mail);
                         
-                        mail.setCurrentMailBox(3);
-                        //userMailbox.moveTo(mail, oldMailBox, 3);
-                        //}
-
                     } catch (InterruptedException  e) {
                         e.printStackTrace();
                     }

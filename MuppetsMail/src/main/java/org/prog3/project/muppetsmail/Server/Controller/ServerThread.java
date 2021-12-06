@@ -29,8 +29,7 @@ public class ServerThread implements Runnable {
     public void run() {
         try {
            createStreams();
-
-            MailWrapper input = (MailWrapper) serverInputStream.readObject();
+           MailWrapper input = (MailWrapper) serverInputStream.readObject();
                         
             switch (input.getType()) {
                 case Constants.COMMAND_FETCH_INBOX:
@@ -41,9 +40,26 @@ public class ServerThread implements Runnable {
                     serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
                     break;
                 case Constants.COMMAND_FETCH_SENT:
-                serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
+                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
                     break;
+                case Constants.COMMAND_SEND_MAIL:
+                    try{
+                        sendMail(input.getMailToSend(), input.getUsername());
+                    }catch(IOException e){
+                        addLogToGUI("Unable to save mailbox to disk", e.getStackTrace().toString());
+                    }
+                    break;
+                    
+                case Constants.COMMAND_DELETE_MAIL:
                 
+                    String username = input.getUsername();
+                    MailBox mailBox = serverModel.getMailBox(username);
+                    int mailBoxFolderTmp = input.getMailToSend().getCurrentMailBox();
+                    
+                    mailBox.moveTo(input.getMailToSend(), mailBoxFolderTmp, Constants.MAILBOX_DELETED_FOLDER);
+                    input.getMailToSend().setCurrentMailBox(Constants.MAILBOX_DELETED_FOLDER);
+                    
+                    break;
                 default:
                     break;
             }
@@ -60,6 +76,24 @@ public class ServerThread implements Runnable {
         }
     }
 
+    private  void sendMail(Mail email, String senderUsername) throws IOException {
+        for(String user : email.getTo()){
+            MailBox tmp = serverModel.getMailBox(user);
+            if(tmp!=null){
+                tmp.addMail(email.clone(), Constants.MAILBOX_INBOX_FOLDER);
+                serverModel.getMailBox(user).saveToDisk();
+            } 
+            else{
+                ArrayList<String> errorListFrom = new ArrayList<>();
+                errorListFrom.add(senderUsername);
+                Mail errorMail = new Mail( "kermit@muppetsmail.com", errorListFrom, "I was unable to deliver message to " + user + " because this user does not exists!", "Unable to deliver message!", Constants.MAILBOX_INBOX_FOLDER);
+                serverModel.getMailBox(senderUsername).addMail(errorMail, Constants.MAILBOX_INBOX_FOLDER);
+            }
+        }
+        serverModel.getMailBox(senderUsername).addMail(email, Constants.MAILBOX_SENT_FOLDER);
+        serverModel.getMailBox(senderUsername).saveToDisk();
+    }
+
     private void checkMailBoxExists(String username){
         try{
             if(serverModel.getMailBox(username) == null){ //if no mailbox exists for username, then mailbox is generated!
@@ -67,7 +101,7 @@ public class ServerThread implements Runnable {
                 MailBox tmp = new MailBox(username);
                 tmp.createOutputObjectWriter("./ServerMailBoxes/" + username + ".muppetsmail");
                 ArrayList<String> to = new ArrayList<>(); to.add(username + "@muppetsmail.org");
-                Mail welcomeMail = new Mail("welcomeMail", "welcome@muppetsmail.org", to , "Welcome to muppetsmail! an email Server and client by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
+                Mail welcomeMail = new Mail( "welcome@muppetsmail.org", to , "Welcome to muppetsmail! an email Server and client by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
                 tmp.addMail(welcomeMail, Constants.MAILBOX_INBOX_FOLDER);
                 tmp.saveToDisk();
                 serverModel.addMailBox(tmp); //todo: return an error class to client in case a duplicated exists eve though it should never be fired!

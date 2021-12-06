@@ -81,7 +81,6 @@ public class HomeController implements Initializable {
         connectionStatusCircle.setFill(Color.LAWNGREEN);
         listViewMessages.setItems(appModel.getCurrentMailFolder());
 
-        //TODO: super bug: se mi loggo con user esistente e poi mi locco con user non esistente le mail sono le stesse di quello di prima... capirte come mai
         listViewMessages.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -91,10 +90,8 @@ public class HomeController implements Initializable {
             }
         });
 
-        //TODO: download the right folder 
         inboxButton.setOnAction(actionEvent -> {
             updateCurrentMailFolder(Constants.COMMAND_FETCH_INBOX);
-    
         });
         trashButton.setOnAction(actionEvent -> {
             updateCurrentMailFolder(Constants.COMMAND_FETCH_DELETE);

@@ -2,15 +2,12 @@ package org.prog3.project.muppetsmail.Client.Controller;
 
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Constants;
-import org.prog3.project.muppetsmail.SharedModel.Delete;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailWrapper;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class NetworkTask implements Runnable {
     ObjectOutputStream clientOutputStream;
@@ -50,14 +47,16 @@ public class NetworkTask implements Runnable {
 
                 case Constants.COMMAND_SEND_MAIL:
                     synchronized (lock) {
-                        clientOutputStream.writeObject(this.mail);
+                        MailWrapper m = new MailWrapper(mail,Constants.COMMAND_SEND_MAIL  ,  appModel.getUsername().get());
+                        clientOutputStream.writeObject(m);
+                        
                         lock.notifyAll();
                     }
                     break;
 
                 case Constants.COMMAND_DELETE_MAIL:
                     synchronized (lock) {
-                        clientOutputStream.writeObject(new Delete(mail));
+                        clientOutputStream.writeObject(new MailWrapper(mail, Constants.COMMAND_DELETE_MAIL, appModel.getUsername().get()));
                         lock.notifyAll();
                     }
                     break;
@@ -76,6 +75,7 @@ public class NetworkTask implements Runnable {
                 this.socket.shutdownInput();
                 this.socket.shutdownOutput();
                 this.socket.close();
+            
             } catch (IOException e) {
                 e.printStackTrace();
             }

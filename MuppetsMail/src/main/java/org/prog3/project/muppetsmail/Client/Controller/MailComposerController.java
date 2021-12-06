@@ -50,7 +50,7 @@ public class MailComposerController {
 
             ArrayList<String> recipients = new ArrayList<>(Arrays.asList(mailToRecipients.split(";")));
 
-            Mail mailToBeSent = new Mail(String.valueOf(mailBody.hashCode()), appModel.getUsername().getValue(), recipients, mailBody, mailSubject, Constants.MAILBOX_SENT_FOLDER);
+            Mail mailToBeSent = new Mail( appModel.getUsername().getValue(), recipients, mailBody, mailSubject, Constants.MAILBOX_SENT_FOLDER);
 
             Object lock = new Object();
 

@@ -85,21 +85,24 @@ public class MailBox implements Serializable {
     * the operation has to be done twice: once for the local running observable list, and once for the long term storage ArrayList
     */
     public synchronized void moveTo(Mail msg, int from, int dest ){
-        System.out.println("Here");
-        switch (from){
-            case Constants.MAILBOX_INBOX_FOLDER:
-                inbox.remove(msg);
-                break;
-            case Constants.MAILBOX_SENT_FOLDER:
-                sent.remove(msg);
-                break;
-            case Constants.MAILBOX_DELETED_FOLDER:
-                deleted.remove(msg);
-                break;
-            default:
-                return;
-        }
+        
+        // switch (from){
+        //     case Constants.MAILBOX_INBOX_FOLDER:
+        //         inbox.remove(msg);
+        //         break;
+        //     case Constants.MAILBOX_SENT_FOLDER:
+        //         sent.remove(msg);
+        //         break;
+        //     case Constants.MAILBOX_DELETED_FOLDER:
+        //         deleted.remove(msg);
+        //         break;
+        //     default:
+        //         return;
+        // }
 
+        System.out.println("Mail was in inbox: " + this.inbox.remove(msg));
+        System.out.println("Mail was in sent: " + this.sent.remove(msg));
+        System.out.println("Mail was in deleted: " + this.deleted.remove(msg));
 
         switch (dest){
             case Constants.MAILBOX_INBOX_FOLDER:
@@ -118,7 +121,7 @@ public class MailBox implements Serializable {
                 return;
         }
     }
-
+    
 
 
     /*

@@ -7,7 +7,7 @@ public class MailWrapper implements Serializable{
     private ArrayList<Mail> listToWrap;
     private Mail mailToSend;
     private String username;
-    private Integer type;
+    private Integer type; //command that is sent
 
     public MailWrapper(ArrayList<Mail> listToWrap, Mail mailToSend, Integer type, String username) {
         this.username = username;
@@ -22,6 +22,10 @@ public class MailWrapper implements Serializable{
 
     public MailWrapper(ArrayList<Mail> mailsFolder){
         this(mailsFolder, null, null, null);
+    }
+
+    public MailWrapper(Mail m, int type, String username) {
+        this(null, m, type, username);
     }
 
     public ArrayList<Mail> getMailsFolder() {
