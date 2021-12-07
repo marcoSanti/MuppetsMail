@@ -30,10 +30,8 @@ public class Mail implements Serializable {
         this.currentMailBox = currentMailBox;
 
         try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-512");
-            byte[] hash = digest.digest(new String(from+to.toString()+message+subject+date.toString()).getBytes(StandardCharsets.UTF_8));
-            mailId = bytesToHex(hash);
-            System.out.println(mailId);
+            String hashSource = new String(from+to.toString()+message+subject+date.toString());
+            mailId = getMailHash(hashSource);
         }catch(NoSuchAlgorithmException e){
             e.printStackTrace();
         }
@@ -96,9 +94,13 @@ public class Mail implements Serializable {
         return new Mail( fromClone, toClone, messageClone, subjectClone, currentMbClone);
     }
 
-    //converts bytes to string. used to generate the mail id!
-    private static String bytesToHex(byte[] hash) {
+    //generate the mail hash 
+    private String getMailHash(String source) throws NoSuchAlgorithmException{
+ 
+        MessageDigest digest = MessageDigest.getInstance("SHA-512");
+        byte[] hash = digest.digest(source.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder(2 * hash.length);
+
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);
             if(hex.length() == 1) {
@@ -106,6 +108,8 @@ public class Mail implements Serializable {
             }
             hexString.append(hex);
         }
+
         return hexString.toString();
     }
+
 }

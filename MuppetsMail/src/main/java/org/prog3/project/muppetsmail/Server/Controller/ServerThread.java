@@ -54,13 +54,14 @@ public class ServerThread implements Runnable {
                 
                     String username = input.getUsername();
                     MailBox mailBox = serverModel.getMailBox(username);
-                    int mailBoxFolderTmp = input.getMailToSend().getCurrentMailBox();
+                    int currentMailBox = input.getMailToSend().getCurrentMailBox();
                     
-                    mailBox.moveTo(input.getMailToSend(), mailBoxFolderTmp, Constants.MAILBOX_DELETED_FOLDER);
+                    mailBox.moveTo(input.getMailToSend(), currentMailBox, Constants.MAILBOX_DELETED_FOLDER);
                     try{
                         mailBox.saveToDisk();
+                        addLogToGUI("Mailbox saved to disk!");
                     }catch(IOException e){
-                        e.printStackTrace();
+                        addLogToGUI("Unable to save mailBox to disk!", e.getStackTrace().toString());
                     }
                     
                     break;
@@ -80,6 +81,8 @@ public class ServerThread implements Runnable {
         }
     }
 
+
+
     private  void sendMail(Mail email, String senderUsername) throws IOException {
         for(String user : email.getTo()){
             MailBox tmp = serverModel.getMailBox(user);
@@ -98,6 +101,8 @@ public class ServerThread implements Runnable {
         serverModel.getMailBox(senderUsername).saveToDisk();
     }
 
+
+
     private void checkMailBoxExists(String username){
         try{
             if(serverModel.getMailBox(username) == null){ //if no mailbox exists for username, then mailbox is generated!
@@ -115,10 +120,14 @@ public class ServerThread implements Runnable {
         }
     }
 
+
+
     private void createStreams() throws IOException {
         serverInputStream = new ObjectInputStream(socket.getInputStream());
         serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
     }
+
+
 
     private void addLogToGUI(String message){
         this.addLogToGUI(message, "");
@@ -132,6 +141,7 @@ public class ServerThread implements Runnable {
             }
         });
     }
+
 
     public Socket getSocket() {
         return socket;

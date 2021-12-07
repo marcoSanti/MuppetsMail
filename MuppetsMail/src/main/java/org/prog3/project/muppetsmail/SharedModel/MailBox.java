@@ -86,12 +86,12 @@ public class MailBox implements Serializable {
     */
     public synchronized void moveTo(Mail msg, int from, int dest ){
         
-       Mail deleteMail = null;
+       Mail mailRemoved = null;
        boolean mailWasInBin = false;
 
-       checkForDeleteMail(msg, inbox, deleteMail);
-       checkForDeleteMail(msg, sent, deleteMail);
-       mailWasInBin = checkForDeleteMail(msg, deleted, deleteMail);
+       tryToRemoveEmail(msg, inbox, mailRemoved);
+       tryToRemoveEmail(msg, sent, mailRemoved);
+       mailWasInBin = tryToRemoveEmail(msg, deleted, mailRemoved);
 
         switch (dest){
             case Constants.MAILBOX_INBOX_FOLDER:
@@ -109,21 +109,21 @@ public class MailBox implements Serializable {
             default:
                 return;
         }
+        msg.setCurrentMailBox(dest);
         
     }
 
 
-    private boolean checkForDeleteMail(Mail mail, ArrayList<Mail> folder, Mail deleteMail){
-        if(deleteMail == null){
+    private boolean tryToRemoveEmail(Mail mail, ArrayList<Mail> folder, Mail mailRemoved){
+        if(mailRemoved == null){
             for(Mail m : folder){
                 if(m.getMailId().equals(mail.getMailId())){
-                    deleteMail = m;
+                    mailRemoved = m;
                     break;
                 }
             }
-            if(deleteMail != null){
-                deleteMail.setCurrentMailBox(Constants.MAILBOX_DELETED_FOLDER);
-                return folder.remove(deleteMail);
+            if(mailRemoved != null){
+                return folder.remove(mailRemoved);
             }
         }
         return false;
