@@ -8,10 +8,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.Client.Controller.ConnectionManager;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ClientModel implements Serializable {
     private StringProperty username;
@@ -33,6 +32,7 @@ public class ClientModel implements Serializable {
     public static ObservableList<Mail> convertArrayListToObservableList(ArrayList<Mail> arrList){
         ObservableList<Mail> tmp = FXCollections.observableArrayList();
         tmp.addAll(arrList);
+        Collections.reverse(tmp);
         return tmp;
     
     }
