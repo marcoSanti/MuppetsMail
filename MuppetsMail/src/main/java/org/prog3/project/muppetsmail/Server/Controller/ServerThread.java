@@ -36,12 +36,15 @@ public class ServerThread implements Runnable {
                     checkMailBoxExists(input.getUsername());
                     serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getInbox()));
                     break;
+                    
                 case Constants.COMMAND_FETCH_DELETE:
                     serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
                     break;
+
                 case Constants.COMMAND_FETCH_SENT:
                     serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
                     break;
+
                 case Constants.COMMAND_SEND_MAIL:
                     try{
                         sendMail(input.getMailToSend(), input.getUsername());
@@ -51,19 +54,7 @@ public class ServerThread implements Runnable {
                     break;
                     
                 case Constants.COMMAND_DELETE_MAIL:
-                
-                    String username = input.getUsername();
-                    MailBox mailBox = serverModel.getMailBox(username);
-                    int currentMailBox = input.getMailToSend().getCurrentMailBox();
-                    
-                    mailBox.moveTo(input.getMailToSend(), currentMailBox, Constants.MAILBOX_DELETED_FOLDER);
-                    try{
-                        mailBox.saveToDisk();
-                        addLogToGUI("Mailbox saved to disk!");
-                    }catch(IOException e){
-                        addLogToGUI("Unable to save mailBox to disk!", e.getStackTrace().toString());
-                    }
-                    
+                    deleteMail(input);                   
                     break;
                 default:
                     break;
@@ -81,6 +72,20 @@ public class ServerThread implements Runnable {
         }
     }
 
+
+    private void deleteMail(MailWrapper input){
+        String username = input.getUsername();
+        MailBox mailBox = serverModel.getMailBox(username);
+        int currentMailBox = input.getMailToSend().getCurrentMailBox();
+        
+        mailBox.moveTo(input.getMailToSend(), currentMailBox, Constants.MAILBOX_DELETED_FOLDER);
+        try{
+            mailBox.saveToDisk();
+            addLogToGUI("Mailbox saved to disk!");
+        }catch(IOException e){
+            addLogToGUI("Unable to save mailBox to disk!", e.getStackTrace().toString());
+        }
+    }
 
 
     private  void sendMail(Mail email, String senderUsername) throws IOException {
