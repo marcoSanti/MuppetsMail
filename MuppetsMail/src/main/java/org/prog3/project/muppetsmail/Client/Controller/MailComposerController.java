@@ -21,6 +21,24 @@ public class MailComposerController {
 
     private ClientModel appModel;
 
+    public void setReplyEmail(Mail replyTo){
+        mailSubject.setText("Re:" + replyTo.getSubject());
+        mailBodyViewer.setText("\n----------------------\n" + replyTo.getMessage());
+        String tmpRecipiants = replyTo.getFrom() + ";" + replyTo.getTo().toString();
+
+        tmpRecipiants = tmpRecipiants.replace("[", "");
+        tmpRecipiants = tmpRecipiants.replace("]", "");
+        tmpRecipiants = tmpRecipiants.replace(",", ";");
+        tmpRecipiants = tmpRecipiants.replace(appModel.getUsername().get(), "");
+        tmpRecipiants = tmpRecipiants.replace(";;", ";");
+
+        mailToRecipients.setText(tmpRecipiants);
+    }
+
+    public void setForwardMail(Mail replyTo){
+        mailSubject.setText("FWD:" + replyTo.getSubject());
+        mailBodyViewer.setText("\n----------------------\n" + replyTo.getMessage());
+    }
 
     public void setClientModel(ClientModel clientModel) {
         this.appModel = clientModel;

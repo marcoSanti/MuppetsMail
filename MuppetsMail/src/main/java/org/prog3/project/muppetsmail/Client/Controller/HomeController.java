@@ -118,15 +118,14 @@ public class HomeController implements Initializable {
     }
 
     public void refreshMailbox() {
-        MailBox tmp;
         Object lock = new Object();
-        //TODO: change the command because we're refreshing the inbox in this way
+       
         appModel.connectionManager.runTask(Constants.COMMAND_FETCH_INBOX, lock);
         try {
             synchronized (lock){
                 lock.wait();
             }
-            //TODO: riscaricare la mailbox
+            listViewMessages.setItems(appModel.getCurrentMailFolder());  
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -200,6 +199,7 @@ public class HomeController implements Initializable {
             composerController.setClientModel(appModel);
 
             stage.show();
+
 
         } catch (IOException e) {
             e.printStackTrace();

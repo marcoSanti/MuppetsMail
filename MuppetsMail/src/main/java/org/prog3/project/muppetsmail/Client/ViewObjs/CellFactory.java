@@ -5,7 +5,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+
 import org.prog3.project.muppetsmail.Client.ClientApp;
+import org.prog3.project.muppetsmail.Client.Controller.MailComposerController;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
@@ -14,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 public class CellFactory extends ListCell<Mail> {
     public Label mailDateLabel;
@@ -64,7 +68,22 @@ public class CellFactory extends ListCell<Mail> {
             ImageButton deleteMail = new ImageButton(new Image(ClientApp.class.getResource("bin.png").toString()), 30 ,30);
 
             forwardMail.setOnAction(actionEvent -> {
-                //TODO: copiare la mail e inviarla a qualcun altro!
+                FXMLLoader replyLoader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
+                try {
+                    Stage stage = new Stage();
+                    stage.setScene(replyLoader.load());
+                    stage.setTitle("Forward email - Muppets Mail Client");
+                    stage.setResizable(false);
+                    stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
+                    MailComposerController mailComposerController = replyLoader.getController();
+                    mailComposerController.setClientModel(appModel);
+                    mailComposerController.setForwardMail(mail);
+
+                    stage.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
 
             deleteMail.setOnAction(actionEvent -> { 

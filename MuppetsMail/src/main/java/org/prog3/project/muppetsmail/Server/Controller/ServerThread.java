@@ -90,16 +90,18 @@ public class ServerThread implements Runnable {
 
     private  void sendMail(Mail email, String senderUsername) throws IOException {
         for(String user : email.getTo()){
-            MailBox tmp = serverModel.getMailBox(user);
-            if(tmp!=null){
-                tmp.addMail(email.clone(), Constants.MAILBOX_INBOX_FOLDER);
-                serverModel.getMailBox(user).saveToDisk();
-            } 
-            else{
-                ArrayList<String> errorListFrom = new ArrayList<>();
-                errorListFrom.add(senderUsername);
-                Mail errorMail = new Mail( "kermit@muppetsmail.com", errorListFrom, "I was unable to deliver message to " + user + " because this user does not exists!", "Unable to deliver message!", Constants.MAILBOX_INBOX_FOLDER);
-                serverModel.getMailBox(senderUsername).addMail(errorMail, Constants.MAILBOX_INBOX_FOLDER);
+            if(user != ""){
+                MailBox tmp = serverModel.getMailBox(user);
+                if(tmp!=null){
+                    tmp.addMail(email.clone(), Constants.MAILBOX_INBOX_FOLDER);
+                    serverModel.getMailBox(user).saveToDisk();
+                } 
+                else{
+                    ArrayList<String> errorListFrom = new ArrayList<>();
+                    errorListFrom.add(senderUsername);
+                    Mail errorMail = new Mail( "Kermit", errorListFrom, "I was unable to deliver message to " + user + " because this user does not exists!", "Unable to deliver message!", Constants.MAILBOX_INBOX_FOLDER);
+                    serverModel.getMailBox(senderUsername).addMail(errorMail, Constants.MAILBOX_INBOX_FOLDER);
+            }
             }
         }
         serverModel.getMailBox(senderUsername).addMail(email, Constants.MAILBOX_SENT_FOLDER);
@@ -114,8 +116,8 @@ public class ServerThread implements Runnable {
                 this.addLogToGUI("Mailbox " + username + " was not found! Creating a new mailbox!");
                 MailBox tmp = new MailBox(username);
                 tmp.createOutputObjectWriter("./ServerMailBoxes/" + username + ".muppetsmail");
-                ArrayList<String> to = new ArrayList<>(); to.add(username + "@muppetsmail.org");
-                Mail welcomeMail = new Mail( "welcome@muppetsmail.org", to , "Welcome to muppetsmail! an email Server and client by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
+                ArrayList<String> to = new ArrayList<>(); to.add(username);
+                Mail welcomeMail = new Mail( "Welcome", to , "Welcome to muppetsmail! an email Server and client by Marco Santimaria and Nicolò Vanzo! We hope you will enjoy our creation :-)", "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
                 tmp.addMail(welcomeMail, Constants.MAILBOX_INBOX_FOLDER);
                 tmp.saveToDisk();
                 serverModel.addMailBox(tmp); //todo: return an error class to client in case a duplicated exists eve though it should never be fired!
