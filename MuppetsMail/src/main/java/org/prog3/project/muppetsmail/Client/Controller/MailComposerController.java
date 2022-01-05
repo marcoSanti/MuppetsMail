@@ -78,7 +78,6 @@ public class MailComposerController {
                     lock.wait();
                     Stage stage = (Stage) mailSendButton.getScene().getWindow();
                     stage.close();
-                    //TODO: download again mailbox folder
 
                 } catch (InterruptedException  e) {
                     e.printStackTrace();

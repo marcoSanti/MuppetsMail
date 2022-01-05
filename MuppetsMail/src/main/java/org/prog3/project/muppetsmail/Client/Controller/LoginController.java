@@ -48,6 +48,7 @@ public class LoginController implements Initializable {
                 } finally {
                     if (appModel.connectionManager.connectToServer()) {
                         appModel.getClientIsLogged().set(true);
+                        
                         Stage stage = (Stage) loginButton.getScene().getWindow();
                         stage.close();
                     } else {

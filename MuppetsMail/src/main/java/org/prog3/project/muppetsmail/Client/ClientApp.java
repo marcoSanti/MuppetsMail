@@ -41,6 +41,10 @@ public class ClientApp extends Application {
         homeController.setLoginStage(loginStage);
         loginStage.setOnCloseRequest(windowEvent -> System.exit(0));
         loginStage.show();
+
+        ClientDemon demon = new ClientDemon(appModel, homeController);
+        demon.start();
+
     }
 
 

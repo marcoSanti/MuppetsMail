@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ClientModel implements Serializable {
+    private int currentMailBox;
     private StringProperty username;
     private StringProperty endpoint;
     private StringProperty endpointPort;
@@ -20,6 +21,7 @@ public class ClientModel implements Serializable {
     private ObservableList<Mail> currentMailFolder;
     private transient BooleanProperty clientIsLogged;
     public ConnectionManager connectionManager;
+    
 
     public ClientModel() {
         this.username = new SimpleStringProperty();
@@ -27,6 +29,7 @@ public class ClientModel implements Serializable {
         this.endpointPort = new SimpleStringProperty();
         this.connectionStatus = new SimpleStringProperty();
         this.clientIsLogged = new SimpleBooleanProperty(false);
+        this.currentMailBox = -1;
     }
 
     public static ObservableList<Mail> convertArrayListToObservableList(ArrayList<Mail> arrList){
@@ -68,4 +71,7 @@ public class ClientModel implements Serializable {
     public void setUsername(String username) {
         this.username.set(username);
     }
+
+    public void setCurrentMailBoxFolder(int mailboxName){ this.currentMailBox = mailboxName; }
+    public int getCurrentMailBoxFolder(){ return this.currentMailBox; }
 }

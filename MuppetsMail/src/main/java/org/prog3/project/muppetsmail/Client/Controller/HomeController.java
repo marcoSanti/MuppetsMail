@@ -104,29 +104,23 @@ public class HomeController implements Initializable {
     }
 
     private void updateCurrentMailFolder(int mailsFolderType) {
-        Object lock = new Object();
-        appModel.connectionManager.runTask(mailsFolderType, lock);
-        try {
-            synchronized (lock) {
-                lock.wait();
-            }
-            listViewMessages.setItems(appModel.getCurrentMailFolder());
-        } catch (InterruptedException ex) {
-            System.out.println(ex.getMessage());
-        }
+        appModel.setCurrentMailBoxFolder(mailsFolderType);
+        refreshMailbox();
     }
 
     public void refreshMailbox() {
         Object lock = new Object();
        
-        appModel.connectionManager.runTask(Constants.COMMAND_FETCH_INBOX, lock);
+        appModel.connectionManager.runTask(appModel.getCurrentMailBoxFolder(), lock);
         try {
+            
             synchronized (lock){
                 lock.wait();
+                
             }
             listViewMessages.setItems(appModel.getCurrentMailFolder());  
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
