@@ -1,7 +1,5 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
 
 import java.io.FileOutputStream;

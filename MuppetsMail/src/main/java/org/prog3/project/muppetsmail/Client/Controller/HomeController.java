@@ -17,7 +17,6 @@ import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.Client.ViewObjs.CellFactory;
 import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
-import org.prog3.project.muppetsmail.SharedModel.MailBox;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
