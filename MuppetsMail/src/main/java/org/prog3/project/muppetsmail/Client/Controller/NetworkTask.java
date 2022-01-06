@@ -4,6 +4,10 @@ import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailWrapper;
+
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -61,6 +65,14 @@ public class NetworkTask implements Runnable {
                     }
                     break;
 
+                case Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE:
+                    synchronized(lock) {
+                        clientOutputStream.writeObject(new MailWrapper(Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE, appModel.getUsername().get()));
+                        checkNewMail();
+                        lock.notifyAll();
+                    }
+                    break;
+
                 default:
 
                     break;
@@ -84,6 +96,19 @@ public class NetworkTask implements Runnable {
         }
     }
 
+    private void checkNewMail() throws IOException, ClassNotFoundException{
+        Integer count = (Integer)clientInputStream.readObject();
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                if(count>0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have " + count + " new messages!");
+                    alert.show();
+                } 
+            }
+        }); 
+    }
+
     private void fetchMailBox(int type) throws IOException, ClassNotFoundException {
         clientOutputStream.writeObject(new MailWrapper(type, appModel.getUsername().get()));
         MailWrapper mw = (MailWrapper) clientInputStream.readObject();
@@ -93,7 +118,6 @@ public class NetworkTask implements Runnable {
     private void initialiseSocket(String endpoint, String port) {
         try {
             socket = new Socket(endpoint, Integer.parseInt(port));
-            System.out.println("Socket created in thread");
         } catch (IOException e) {
             e.printStackTrace();
         }

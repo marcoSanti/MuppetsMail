@@ -17,6 +17,7 @@ public class Mail implements Serializable {
     private String message;
     private String subject;
     private Date date;
+    private boolean isNew;
     private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
     private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
     private int currentMailBox;
@@ -28,7 +29,7 @@ public class Mail implements Serializable {
         this.subject = subject;
         this.date = new Date();
         this.currentMailBox = currentMailBox;
-
+        this.isNew = true;
         try{
             String hashSource = new String(from+to.toString()+message+subject+date.toString());
             mailId = getMailHash(hashSource);
@@ -67,6 +68,14 @@ public class Mail implements Serializable {
 
     public Date getDate() {
         return date;
+    }
+
+    public boolean isMailNew() {
+        return this.isNew;
+    }
+
+    public void setMailAsRead(){
+        this.isNew = false;
     }
 
     @Override

@@ -52,8 +52,7 @@ public class LoginController implements Initializable {
                         Stage stage = (Stage) loginButton.getScene().getWindow();
                         stage.close();
                     } else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR,
-                                "Error: cannot established connection with server\n");
+                        Alert alert = new Alert(Alert.AlertType.ERROR, "Error: cannot established connection with server\n");
                         alert.show();
                     }
                 }
@@ -66,8 +65,7 @@ public class LoginController implements Initializable {
                 if (usernameInput.getText().equals(""))
                     MissingFields += "Username\n\t";
 
-                Alert alert = new Alert(Alert.AlertType.ERROR,
-                        "Warning: the following fields are empty:\n\t" + MissingFields + "\nComplete them and retry!");
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Warning: the following fields are empty:\n\t" + MissingFields + "\nComplete them and retry!");
                 alert.show();
             }
         });

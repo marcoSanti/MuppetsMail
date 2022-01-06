@@ -1,7 +1,6 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailNotFoundException;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;

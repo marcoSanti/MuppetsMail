@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.prog3.project.muppetsmail.Client.Controller.ConnectionManager;
+import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class ClientModel implements Serializable {
         this.endpointPort = new SimpleStringProperty();
         this.connectionStatus = new SimpleStringProperty();
         this.clientIsLogged = new SimpleBooleanProperty(false);
-        this.currentMailBox = -1;
+        this.currentMailBox = Constants.COMMAND_FETCH_INBOX;
     }
 
     public static ObservableList<Mail> convertArrayListToObservableList(ArrayList<Mail> arrList){

@@ -35,18 +35,15 @@ public class ServerThread implements Runnable {
             switch (input.getType()) {
                 case Constants.COMMAND_FETCH_INBOX:
                     checkMailBoxExists(input.getUsername());
-                    serverOutputStream
-                            .writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getInbox()));
+                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getInbox()));
                     break;
 
                 case Constants.COMMAND_FETCH_DELETE:
-                    serverOutputStream
-                            .writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
+                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
                     break;
 
                 case Constants.COMMAND_FETCH_SENT:
-                    serverOutputStream
-                            .writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
+                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
                     break;
 
                 case Constants.COMMAND_SEND_MAIL:
@@ -60,6 +57,10 @@ public class ServerThread implements Runnable {
                 case Constants.COMMAND_DELETE_MAIL:
                     deleteMail(input);
                     break;
+
+                case Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE :
+                    checkForNewMail(input);
+                break;
                 default:
                     break;
             }
@@ -76,6 +77,25 @@ public class ServerThread implements Runnable {
             } catch (IOException e) {
                 this.addLogToGUI("Error in ServerThread on closing socket", e.getMessage());
             }
+        }
+    }
+
+    private void checkForNewMail(MailWrapper input){
+        String username = input.getUsername();
+        ArrayList<Mail> mbTmp = serverModel.getMailBox(username).getInbox();
+        Integer count = 0;
+        
+        for(Mail m : mbTmp){
+            if(m.isMailNew()){
+                count++;
+                m.setMailAsRead();
+            } 
+        }
+        
+        try{ 
+            serverOutputStream.writeObject(count);
+        }catch(IOException e){
+            addLogToGUI("Connection closed by client", e.getMessage());
         }
     }
 
