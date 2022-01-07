@@ -46,6 +46,30 @@ public class ServerController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.buttonsSetup();
+        this.listviewSetup();
+    }
+
+    private void listviewSetup() {
+        listView.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<LogEntry>() {
+                    @Override
+                    public void changed(ObservableValue<? extends LogEntry> observableValue, LogEntry oldValue, LogEntry newValue) {
+                        if (newValue != null) {
+                            detailedMessage.setText(newValue.getDetailedMessage());
+                            detailedTimestamp.setText(newValue.getTimestamp().toString());
+                            message.setText(newValue.getMessage());
+                        } else {
+                            detailedMessage.setText("");
+                            detailedTimestamp.setText("");
+                            message.setText("");
+                        }
+                    }
+                }
+        );
+    }
+
+    private void buttonsSetup() {
         startServerButton.setOnAction(actionEvent -> {
             this.startServer();
         });
@@ -65,23 +89,6 @@ public class ServerController implements Initializable {
 
         });
 
-        listView.getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<LogEntry>() {
-                    @Override
-                    public void changed(ObservableValue<? extends LogEntry> observableValue, LogEntry oldValue, LogEntry newValue) {
-                        if (newValue != null) {
-                            detailedMessage.setText(newValue.getDetailedMessage());
-                            detailedTimestamp.setText(newValue.getTimestamp().toString());
-                            message.setText(newValue.getMessage());
-                        } else {
-                            detailedMessage.setText("");
-                            detailedTimestamp.setText("");
-                            message.setText("");
-                        }
-                    }
-                }
-        );
-        
         serverClearButton.setOnAction(actionEvent -> {model.getLogEntries().clear();});
     }
 
@@ -95,13 +102,10 @@ public class ServerController implements Initializable {
             model.addLog("MailBox folder found!", "Folder is: " + e.getMessage());
         }
 
-
-
         File[] files = new File(mailBoxPath).listFiles((dir, name) -> !name.equals(".DS_Store"));
 
         if (files != null) {
             model.addLog("Loading mailboxes from folder");
-
 
             for (File f : files) {
 

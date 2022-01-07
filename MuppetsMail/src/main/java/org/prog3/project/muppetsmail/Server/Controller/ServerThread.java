@@ -32,38 +32,8 @@ public class ServerThread implements Runnable {
             createStreams();
             MailWrapper input = (MailWrapper) serverInputStream.readObject();
 
-            switch (input.getType()) {
-                case Constants.COMMAND_FETCH_INBOX:
-                    checkMailBoxExists(input.getUsername());
-                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getInbox()));
-                    break;
-
-                case Constants.COMMAND_FETCH_DELETE:
-                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
-                    break;
-
-                case Constants.COMMAND_FETCH_SENT:
-                    serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
-                    break;
-
-                case Constants.COMMAND_SEND_MAIL:
-                    try {
-                        sendMail(input.getMailToSend(), input.getUsername());
-                    } catch (IOException e) {
-                        addLogToGUI("Unable to save mailbox to disk", e.getStackTrace().toString());
-                    }
-                    break;
-
-                case Constants.COMMAND_DELETE_MAIL:
-                    deleteMail(input);
-                    break;
-
-                case Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE :
-                    checkForNewMail(input);
-                break;
-                default:
-                    break;
-            }
+            this.handleRequestFromClient(input);
+            
         } catch (EOFException E) {
             this.addLogToGUI("Socket closed by client");
 
@@ -96,6 +66,41 @@ public class ServerThread implements Runnable {
             serverOutputStream.writeObject(count);
         }catch(IOException e){
             addLogToGUI("Connection closed by client", e.getMessage());
+        }
+    }
+
+    private void handleRequestFromClient(MailWrapper input) throws IOException {
+        switch (input.getType()) {
+            case Constants.COMMAND_FETCH_INBOX:
+                checkMailBoxExists(input.getUsername());
+                serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getInbox()));
+                break;
+
+            case Constants.COMMAND_FETCH_DELETE:
+                serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
+                break;
+
+            case Constants.COMMAND_FETCH_SENT:
+                serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
+                break;
+
+            case Constants.COMMAND_SEND_MAIL:
+                try {
+                    sendMail(input.getMailToSend(), input.getUsername());
+                } catch (IOException e) {
+                    addLogToGUI("Unable to save mailbox to disk", e.getStackTrace().toString());
+                }
+                break;
+
+            case Constants.COMMAND_DELETE_MAIL:
+                deleteMail(input);
+                break;
+
+            case Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE :
+                checkForNewMail(input);
+            break;
+            default:
+                break;
         }
     }
 

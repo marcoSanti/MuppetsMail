@@ -37,9 +37,7 @@ public class ServerThreadManager implements Runnable {
     @Override
     public void run() {
         try {
-            server = new ServerSocket(1234);
-            this.addLogToGUI("Server started on port 1234");
-            this.isRunning = true;
+            this.createServerSocketAndSetIsRunning();
             while(isRunning){
                 Socket socket = server.accept();
                 threadPool.execute(new ServerThread(socket, serverModel));
@@ -64,6 +62,12 @@ public class ServerThreadManager implements Runnable {
                 serverModel.addLog(message, detailed);
             }
         });
+    }
+
+    private void createServerSocketAndSetIsRunning() throws IOException {
+        server = new ServerSocket(1234);
+        this.addLogToGUI("Server started on port 1234");
+        this.isRunning = true;
     }
 
 
