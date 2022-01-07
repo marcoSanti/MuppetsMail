@@ -10,6 +10,9 @@ import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 
 import java.util.Objects;
 
+/**
+ * This class is the main application of the client. we create the main stage and the login stage
+ */
 public class ClientApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -42,8 +45,9 @@ public class ClientApp extends Application {
         loginStage.setOnCloseRequest(windowEvent -> System.exit(0));
         loginStage.show();
 
-        ClientDemon demon = new ClientDemon(appModel, homeController);
-        demon.start();
+        //start of the client demon to refresh the view and to check for new emails
+        (new ClientDemon(appModel, homeController, 1000)).start();
+       
 
     }
 

@@ -1,17 +1,21 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
+import org.prog3.project.muppetsmail.SharedModel.Utils;
 import org.prog3.project.muppetsmail.Client.Model.ClientModel;
 import org.prog3.project.muppetsmail.SharedModel.Constants;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailWrapper;
 
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-
+import javafx.scene.control.Alert.AlertType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+
+/**
+ * This class is a thread that is executed whenever 
+ * a server request is done by the client
+ */
 
 public class NetworkTask implements Runnable {
     ObjectOutputStream clientOutputStream;
@@ -22,6 +26,12 @@ public class NetworkTask implements Runnable {
     int command;
     Mail mail;
 
+    /**
+     * 
+     * @param appModel the application model
+     * @param command the command to be executed
+     * @param lock the lock that will be used to signal the task is completed and data is available
+     */
     public NetworkTask(ClientModel appModel, int command, Object lock) {
         this.appModel = appModel;
         this.initialiseSocket(appModel.getEndpoint().getValue(), appModel.getEndpointPort().getValue());
@@ -30,11 +40,22 @@ public class NetworkTask implements Runnable {
         this.lock = lock;
     }
 
+    /**
+     * 
+     * @param appModel the application model
+     * @param command the command to be executed
+     * @param lock the lock that will be used to signal the task is completed and data is available
+     * @param mail The email object to be sent to the server
+     */
     public NetworkTask(ClientModel appModel, int command, Object lock, Mail mail) {
         this(appModel, command, lock);
         this.mail = mail;
     }
 
+    /**
+     * This method checks wich command is requested, and run the code accordingly.
+     * Once the job is done, it signals the parent task that the job is done trough the lock object
+     */
     @Override
     public void run() {
 
@@ -51,9 +72,7 @@ public class NetworkTask implements Runnable {
 
                 case Constants.COMMAND_SEND_MAIL:
                     synchronized (lock) {
-                        MailWrapper m = new MailWrapper(mail,Constants.COMMAND_SEND_MAIL  ,  appModel.getUsername().get());
-                        clientOutputStream.writeObject(m);
-                        
+                        clientOutputStream.writeObject(new MailWrapper(mail,Constants.COMMAND_SEND_MAIL, appModel.getUsername().get()));
                         lock.notifyAll();
                     }
                     break;
@@ -79,9 +98,6 @@ public class NetworkTask implements Runnable {
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
-            synchronized (lock) {
-                lock.notifyAll();
-            }
         } finally {
             try {
                 this.socket.shutdownInput();
@@ -96,25 +112,37 @@ public class NetworkTask implements Runnable {
         }
     }
 
+
+    /**
+     * this function checks for new emails, and then shows an alert when new emails are found
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void checkNewMail() throws IOException, ClassNotFoundException{
         Integer count = (Integer)clientInputStream.readObject();
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                if(count>0){
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "You have " + count + " new messages!");
-                    alert.show();
-                } 
-            }
-        }); 
+
+        if(count>0){
+            Utils.showAlert(AlertType.INFORMATION, "You have " + count + " new messages!", "Attention:", "You have new messages!");
+        }  
     }
 
+    /**
+     * this function fetches a mailbox from the remote server
+     * @param type the type (inbox / sent / deleted ) defined in Constants class
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void fetchMailBox(int type) throws IOException, ClassNotFoundException {
         clientOutputStream.writeObject(new MailWrapper(type, appModel.getUsername().get()));
         MailWrapper mw = (MailWrapper) clientInputStream.readObject();
         appModel.setCurrentMailFolder(ClientModel.convertArrayListToObservableList(mw.getMailsFolder()));
     }
 
+    /**
+     * This function inisitlaizes a socket
+     * @param endpoint
+     * @param port
+     */
     private void initialiseSocket(String endpoint, String port) {
         try {
             socket = new Socket(endpoint, Integer.parseInt(port));
@@ -123,6 +151,9 @@ public class NetworkTask implements Runnable {
         }
     }
 
+    /**
+     * This function initializes input and output streams
+     */
     private void initialiseStreams() {
         try {
             clientOutputStream = new ObjectOutputStream(socket.getOutputStream());

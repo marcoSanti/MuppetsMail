@@ -4,6 +4,10 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * this class defines a custom button in wich instead of a label,
+ * an image is shown
+ */
 public class ImageButton extends Button {
 
     private final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 2, 2, 2, 2;";

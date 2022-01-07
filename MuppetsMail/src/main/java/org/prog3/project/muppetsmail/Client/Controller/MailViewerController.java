@@ -1,7 +1,5 @@
 package org.prog3.project.muppetsmail.Client.Controller;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -20,10 +18,13 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+/**
+ * This class is the controller for the MailViewer view
+ */
 public class MailViewerController implements Initializable {
     /*
     * UI vars
-    * */
+    */
     public Label showMailFrom;
     public Label showMailTo;
     public Label showMailSubject;
@@ -34,86 +35,101 @@ public class MailViewerController implements Initializable {
     private Mail mail;
     private ClientModel appModel;
 
+    /**
+     * This function sets the client app model, it is required to be able to delete an email
+     * @param clientModel the client app model
+     */
     public void setClientModel(ClientModel clientModel){
         this.appModel = clientModel;
     }
-    public void setMail(Mail mail){ this.mail = mail;}
 
+    /**
+     * This function sets the email to be shown
+     * @param mail the email to be shown
+     */
+    public void setMail(Mail mail){ 
+        this.mail = mail;
+    }
+
+    /**
+     * This function is used to add the event listener to the buttons
+     * of the graphical interface
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        deleteMailButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Object lock = new Object();
-
-                appModel.connectionManager.runTask(Constants.COMMAND_DELETE_MAIL, lock, mail);
-                synchronized (lock){
-                    try {
-                       
-                        lock.wait();
-                        appModel.getCurrentMailFolder().remove(mail);
-                        
-                    } catch (InterruptedException  e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                Stage stage = (Stage) showMailFrom.getScene().getWindow();
-                stage.close();
-
-            }
-        });
-
-        replyButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent){
-                FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
-                try {
-                    Stage stage = new Stage();
-                    stage.setScene(loader.load());
-                    stage.setTitle("Reply to email - Muppets Mail Client");
-                    stage.setResizable(false);
-                    stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
-                    MailComposerController mailComposerController = loader.getController();
-                    mailComposerController.setClientModel(appModel);
-                    mailComposerController.setReplyEmail(mail);
-
-                    stage.show();
-
-                    Stage viewStage = (Stage) replyButton.getScene().getWindow();
-                    viewStage.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-
-        forwardButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent){
-                FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
-                try {
-                    Stage stage = new Stage();
-                    stage.setScene(loader.load());
-                    stage.setTitle("Forward email - Muppets Mail Client");
-                    stage.setResizable(false);
-                    stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
-                    MailComposerController mailComposerController = loader.getController();
-                    mailComposerController.setClientModel(appModel);
-                    mailComposerController.setForwardMail(mail);
-
-                    stage.show();
-
-                    Stage viewStage = (Stage) replyButton.getScene().getWindow();
-                    viewStage.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        deleteMailButton.setOnAction( actionEvent -> deleteMail() );
+        replyButton.setOnAction( actionEvent -> replyToEmail() );
+        forwardButton.setOnAction( actionEvent -> forwardEmail() );
     }
+
+
+    /**
+     * this function deletes an email from the server, and then removes it from the shown email
+     * (it is moved to the trash folder)
+     */
+    private void deleteMail(){
+
+        Object lock = new Object();
+        appModel.connectionManager.runTask(Constants.COMMAND_DELETE_MAIL, lock, mail);
+        
+        try {
+            synchronized (lock){
+            lock.wait();
+            }
+            appModel.getCurrentMailFolder().remove(mail);
+    
+        } catch (InterruptedException  e) {
+            System.out.println(e.getMessage());
+        }
+        ((Stage) showMailFrom.getScene().getWindow()).close();
+    }
+
+    /**
+     * This function is used to forward an email
+     */
+    private void forwardEmail(){
+        FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
+        try {
+            Stage stage = new Stage();
+            stage.setScene(loader.load());
+            stage.setTitle("Forward email - Muppets Mail Client");
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
+            MailComposerController mailComposerController = loader.getController();
+            mailComposerController.setClientModel(appModel);
+            mailComposerController.setForwardMail(mail);
+
+            stage.show();
+
+            ((Stage) replyButton.getScene().getWindow()).close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This function is udes to reply to an email
+     */
+    private void replyToEmail(){
+        FXMLLoader loader = new FXMLLoader(ClientApp.class.getResource("MailComposer.fxml"));
+        try {
+            Stage stage = new Stage();
+            stage.setScene(loader.load());
+            stage.setTitle("Reply to email - Muppets Mail Client");
+            stage.setResizable(false);
+            stage.getIcons().add(new Image(Objects.requireNonNull(ClientApp.class.getResourceAsStream("ClientIcon.png"))));
+            MailComposerController mailComposerController = loader.getController();
+            mailComposerController.setClientModel(appModel);
+            mailComposerController.setReplyEmail(mail);
+
+            stage.show();
+
+            ((Stage) replyButton.getScene().getWindow()).close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
