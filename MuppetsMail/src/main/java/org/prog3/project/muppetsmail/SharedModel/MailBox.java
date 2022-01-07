@@ -26,7 +26,6 @@ public class MailBox implements Serializable {
         this.inbox = new ArrayList<>();
         this.sent = new ArrayList<>();
         this.deleted =new ArrayList<>();
-
     }
 
 

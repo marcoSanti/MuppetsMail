@@ -70,26 +70,11 @@ public class ServerController implements Initializable {
     }
 
     private void buttonsSetup() {
-        startServerButton.setOnAction(actionEvent -> {
-            this.startServer();
-        });
-
-        stopServerButton.setOnAction(actionEvent -> {
-            this.stopServer();
-        });
-
-        restartServerButton.setOnAction(actionEvent -> {
-            if(serverThreadManagerClass!=null && serverThreadManagerClass.isRunning()) {
-                this.stopServer();
-                this.startServer();
-
-            } else {
-                this.startServer();
-            }
-
-        });
-
-        serverClearButton.setOnAction(actionEvent -> {model.getLogEntries().clear();});
+        
+        startServerButton.setOnAction(actionEvent -> startServer() );
+        stopServerButton.setOnAction(actionEvent -> stopServer() );
+        restartServerButton.setOnAction(actionEvent -> restartServer() );
+        serverClearButton.setOnAction(actionEvent -> model.getLogEntries().clear() );
     }
 
     private void loadMailboxes() throws MailBoxNotFoundException {
@@ -162,6 +147,16 @@ public class ServerController implements Initializable {
            model.addLog("Server stopped");
        }
        else model.addLog("Unable to stop server!", "Server was not started.");
+    }
+
+    private void restartServer(){
+        if(serverThreadManagerClass!=null && serverThreadManagerClass.isRunning()) {
+            this.stopServer();
+            this.startServer();
+
+        } else {
+            this.startServer();
+        }
     }
 
 }
