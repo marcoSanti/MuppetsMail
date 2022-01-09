@@ -78,15 +78,18 @@ public class ServerThread implements Runnable {
 
             case Constants.COMMAND_FETCH_DELETE:
                 serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
+                addLogToGUI("Fetched deleted mails for user: ", input.getUsername());
                 break;
 
             case Constants.COMMAND_FETCH_SENT:
                 serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
+                addLogToGUI("Fetched sent mails for user: ", input.getUsername());
                 break;
 
             case Constants.COMMAND_SEND_MAIL:
                 try {
                     sendMail(input.getMailToSend(), input.getUsername());
+                    addLogToGUI("Mail sent from: " + input.getMailToSend().getFrom() + " to: " + input.getMailToSend().getTo(), "Mail sent");
                 } catch (IOException e) {
                     addLogToGUI("Unable to save mailbox to disk", e.getStackTrace().toString());
                 }
@@ -94,6 +97,7 @@ public class ServerThread implements Runnable {
 
             case Constants.COMMAND_DELETE_MAIL:
                 deleteMail(input);
+                addLogToGUI("Mail with id: " + input.getMailToSend().getMailId() + "", "Mail sent");
                 break;
 
             case Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE :
