@@ -29,8 +29,6 @@ public class ServerController implements Initializable {
     public Button stopServerButton;
     public Button restartServerButton;
     public Button serverClearButton;
-    public Button sendCommandButton;
-    public TextField commandInput;
     public ListView<LogEntry> listView;
     public TextField detailedTimestamp;
     public TextArea detailedMessage;
