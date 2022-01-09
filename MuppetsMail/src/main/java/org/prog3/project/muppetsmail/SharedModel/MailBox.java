@@ -61,7 +61,7 @@ public class MailBox implements Serializable {
     }
 
     /*
-    * This methods return a mail message from a certain string id
+    * This methods returns a mail message from a certain string id
     * */
     public synchronized Mail getEmail(String mailId, List<Mail> folder) throws MailNotFoundException{
         for(Mail t: folder) if(t.getMailId().equals(mailId)) return t;
@@ -106,7 +106,6 @@ public class MailBox implements Serializable {
                 return;
         }
         msg.setCurrentMailBox(dest);
-        
     }
 
 

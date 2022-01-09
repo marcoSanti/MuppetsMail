@@ -18,8 +18,8 @@ public class Mail implements Serializable {
     private String subject;
     private Date date;
     private boolean isNew;
-    private final DateFormat dtfOld = new SimpleDateFormat("dd/MM/yy");
-    private final DateFormat dtfToday = new SimpleDateFormat("HH:mm");
+    private final DateFormat dateFormatterOld = new SimpleDateFormat("dd/MM/yy");
+    private final DateFormat dateFormatterToday = new SimpleDateFormat("HH:mm");
     private int currentMailBox;
 
     public Mail(String from, ArrayList<String> to, String message, String subject, int currentMailBox) {
@@ -84,9 +84,9 @@ public class Mail implements Serializable {
         
         long todayDiff = date.getTime() - today.getTime();
         if(TimeUnit.HOURS.toHours(todayDiff) > 24){
-            return "[" + dtfOld.format(date) + "]" + "    from: " + from + "    subject: " + subject;
+            return "[" + dateFormatterOld.format(date) + "]" + "    from: " + from + "    subject: " + subject;
         }else{
-            return "[" + dtfToday.format(date) + "]" + "    from: " + from + "    subject: " + subject;
+            return "[" + dateFormatterToday.format(date) + "]" + "    from: " + from + "    subject: " + subject;
         }
     }
 

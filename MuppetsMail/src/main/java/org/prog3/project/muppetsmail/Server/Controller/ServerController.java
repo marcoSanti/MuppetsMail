@@ -68,7 +68,6 @@ public class ServerController implements Initializable {
     }
 
     private void buttonsSetup() {
-        
         startServerButton.setOnAction(actionEvent -> startServer() );
         stopServerButton.setOnAction(actionEvent -> stopServer() );
         restartServerButton.setOnAction(actionEvent -> restartServer() );
