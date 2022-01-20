@@ -7,6 +7,9 @@ import org.prog3.project.muppetsmail.SharedModel.MailBox;
 
 import java.util.ArrayList;
 
+/**
+ * This class is the server model
+ */
 public class ServerModel {
 
     private ObservableList<LogEntry> logEntries = FXCollections.observableArrayList();
@@ -16,34 +19,45 @@ public class ServerModel {
         this.serverMailBoxes = new ArrayList<>();
     }
 
+    /**
+     * This function adds a mailbox loaded from the os disk to the loaded mailbox arrayList
+     * @param mailBox the mailbox to be added
+     * @throws MailBoxNameDuplicated
+     */
     public void addMailBox(MailBox mailBox) throws MailBoxNameDuplicated {
-        if(isUsernameAlreadyTaken(mailBox)) {
+        if(isUsernameAlreadyTaken(mailBox)) 
             throw new MailBoxNameDuplicated("A mail with the same username already exists, please check the username and retry");
-        } else {
-            serverMailBoxes.add(mailBox);
-        }
+        
+        serverMailBoxes.add(mailBox);
     }
 
+    /**
+     * This functoin tells whether a mailbox with the same usernema has already been loaded into memory
+     * @param mailBox the mailbox to be loaded
+     * @return
+     */
     private boolean isUsernameAlreadyTaken(MailBox mailBox) {
         boolean usernameDuplicated = false;
-        for (int i = 0; i < serverMailBoxes.size() && !usernameDuplicated; i++) {
-            if(serverMailBoxes.get(i).getUsername().equals(mailBox.getUsername())) {
+        for (int i = 0; i < serverMailBoxes.size() && !usernameDuplicated; i++) 
+            if(serverMailBoxes.get(i).getUsername().equals(mailBox.getUsername())) 
                 usernameDuplicated = true;
-            }
-        }
+    
         return usernameDuplicated;
     }
 
-
+    /**
+     * this function return a mailbox
+     * @param username the username of which the mailbox is required
+     * @return the username mailbox
+     */
     public MailBox getMailBox(String username) {
         MailBox mailBoxToReturn = null;
-        boolean mailFound = false;
-        for(int i = 0; i < this.serverMailBoxes.size() && !mailFound; i++) {
-            if(serverMailBoxes.get(i).getUsername().equals(username)) {
+    
+        for(int i = 0; i < this.serverMailBoxes.size() && (mailBoxToReturn == null); i++) 
+            if(serverMailBoxes.get(i).getUsername().equals(username)) 
                 mailBoxToReturn = serverMailBoxes.get(i);
-                mailFound = true;
-            }
-        }
+                
+            
         return mailBoxToReturn;
     }
     

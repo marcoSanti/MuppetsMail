@@ -109,6 +109,14 @@ public class MailBox implements Serializable {
     }
 
 
+    /**
+     * This method tries to remove an email. since it is called from a synchronized method, it is not required to be also synchronized
+     * this method removes an email from the previous folder when a mail is moved, so that no duplicates exists
+     * @param mail
+     * @param folder
+     * @param mailRemoved
+     * @return
+     */
     private boolean tryToRemoveEmail(Mail mail, ArrayList<Mail> folder, Mail mailRemoved){
         if(mailRemoved == null){
             for(Mail m : folder){
@@ -148,7 +156,9 @@ public class MailBox implements Serializable {
     }
 
 
-    //This method allows a mailbox to be saved into hard disk
+    /**
+     * This method allows a mailbox to be saved into hard disk
+     */
     public synchronized void saveToDisk() throws IOException {
         if(writer == null) writer = new ObjectOutputStream(new FileOutputStream(fileWriterPath));
         writer.writeObject(this);

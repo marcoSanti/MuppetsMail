@@ -1,5 +1,7 @@
 package org.prog3.project.muppetsmail.SharedModel;
 
+import org.prog3.project.muppetsmail.Server.Model.ServerModel;
+
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -23,6 +25,30 @@ public class Utils {
                 alert.show();   
             }
         }); 
+    }
+
+    /**
+     * This function adds a log message to the gui
+     * @param message description message
+     * @param serverModel the server model
+     */
+    public static void addLogToGUI(String message, ServerModel serverModel) {
+        Utils.addLogToGUI(message, "", serverModel);
+    }
+
+    /**
+     * This function adds a log message to the gui
+     * @param message description message
+     * @param detailed detailed description message
+     * @param serverModel the server model
+     */
+    public static void addLogToGUI(String message, String detailed, ServerModel serverModel) {
+        Platform.runLater(new Runnable() { // done because a new task is require to update model and gui
+            @Override
+            public void run() {
+                serverModel.addLog(message, detailed);
+            }
+        });
     }
     
 }

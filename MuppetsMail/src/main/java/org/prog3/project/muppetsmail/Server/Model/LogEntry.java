@@ -5,6 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Thic class rappresents a single entry in the log shown on the server ListView
+ */
 public class LogEntry implements Serializable {
     private final String message;
     private final String detailedMessage;

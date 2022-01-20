@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This is the message format that is used to communicate between client and server.
  * The client forms a message with this class, sends it to the server.
  * The server accepts the message and now it can reads it.
- * We didn't use a simple Mail class because we can send more informations than the mail itself
+ * We didn't use a simple Mail class because we need to send more informations than the mail itself
  */
 public class MailWrapper implements Serializable{
     private ArrayList<Mail> listToWrap;

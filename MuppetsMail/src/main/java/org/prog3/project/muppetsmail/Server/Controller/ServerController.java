@@ -42,12 +42,21 @@ public class ServerController implements Initializable {
 
     private final String mailBoxPath = "./ServerMailBoxes/";
 
+    /**
+     * This function initializes the server front end by adding the handler to the button and 
+     * populating the listview
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.buttonsSetup();
         this.listviewSetup();
     }
 
+    /**
+     * This function initializes the list view. in particular, it adds a change listener to the current selected 
+     * item in the listView, so that the fields (on the bottom of the view) that shows the informations about the log message
+     * are filled accordingly to the new selected item, or emptied if no item is selected.
+     */
     private void listviewSetup() {
         listView.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<LogEntry>() {
@@ -67,6 +76,9 @@ public class ServerController implements Initializable {
         );
     }
 
+    /**
+     * This function adds the handlers to the button action event
+     */
     private void buttonsSetup() {
         startServerButton.setOnAction(actionEvent -> startServer() );
         stopServerButton.setOnAction(actionEvent -> stopServer() );
@@ -74,9 +86,13 @@ public class ServerController implements Initializable {
         serverClearButton.setOnAction(actionEvent -> model.getLogEntries().clear() );
     }
 
+    /**
+     * This function loads the mailboxes from the os disk.
+     * @throws MailBoxNotFoundException
+     */
     private void loadMailboxes() throws MailBoxNotFoundException {
         ObjectInputStream mailBoxReader = null;
-        //if mailbox folder does not exists, it will be created
+        //if mailbox folder does not exists, it will be created, otherwise an exception is thrown because the folder already exists.
         try {
             Files.createDirectory(Paths.get(mailBoxPath));
             model.addLog("MailBox folder not found! creating a new one!");
@@ -84,7 +100,7 @@ public class ServerController implements Initializable {
             model.addLog("MailBox folder found!", "Folder is: " + e.getMessage());
         }
 
-        File[] files = new File(mailBoxPath).listFiles((dir, name) -> !name.equals(".DS_Store"));
+        File[] files = new File(mailBoxPath).listFiles((dir, name) -> name.matches("*.muppetsmail")); //list all the mailboxes with a regex
 
         if (files != null) {
             model.addLog("Loading mailboxes from folder");
@@ -112,7 +128,10 @@ public class ServerController implements Initializable {
         this.startServer();
     }
 
-    //this is our "initialize" since we cannot do anything until we set the application model!
+    /**
+     * this is our "initialize" since we cannot do anything until we set the application model!
+     * @param model the server model
+     */
     public void setModel(ServerModel model) {
         this.model = model;
         listView.setItems(model.getLogEntries());
@@ -125,6 +144,9 @@ public class ServerController implements Initializable {
     }
 
 
+    /**
+     * This function starts the server, which means the threadPool is initialized so that it is able to accept new networkTask to be run
+     */
     private void startServer() {
 
        if((serverThreadManagerClass == null) || (serverThreadManagerClass!=null && !serverThreadManagerClass.isRunning())){
@@ -138,6 +160,9 @@ public class ServerController implements Initializable {
 
     }
 
+    /**
+     * this function stops the server, by stopping the threadPool from accepting new threads
+     */
     private void stopServer() {
        if(serverThreadManagerClass != null && serverThreadManagerClass.isRunning()) {
            serverThreadManagerClass.stopServer();
@@ -146,6 +171,9 @@ public class ServerController implements Initializable {
        else model.addLog("Unable to stop server!", "Server was not started.");
     }
 
+    /**
+     * This function restarts the server
+     */
     private void restartServer(){
         if(serverThreadManagerClass!=null && serverThreadManagerClass.isRunning()) {
             this.stopServer();

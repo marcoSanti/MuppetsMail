@@ -2,3 +2,4 @@
 *.muppetsmail
 *.DS_Store
 **/target/
+*.log

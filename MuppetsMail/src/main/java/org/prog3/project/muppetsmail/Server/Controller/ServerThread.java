@@ -1,12 +1,12 @@
 package org.prog3.project.muppetsmail.Server.Controller;
 
-import javafx.application.Platform;
 import org.prog3.project.muppetsmail.Server.Model.ServerModel;
 import org.prog3.project.muppetsmail.SharedModel.Exceptions.MailBoxNameDuplicated;
 import org.prog3.project.muppetsmail.SharedModel.Mail;
 import org.prog3.project.muppetsmail.SharedModel.MailBox;
 import org.prog3.project.muppetsmail.SharedModel.MailWrapper;
 import org.prog3.project.muppetsmail.SharedModel.Constants;
+import org.prog3.project.muppetsmail.SharedModel.Utils;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -15,17 +15,27 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * Server thread is the class that will be going to serve a request made by 
+ * the client
+ */
 public class ServerThread implements Runnable {
     private Socket socket;
-    ServerModel serverModel;
+    private ServerModel serverModel;
     private ObjectInputStream serverInputStream;
     private ObjectOutputStream serverOutputStream;
 
+    /**
+     * 
+     * @param socket Socket n which the request has to be served
+     * @param model The server model which contains all the informations
+     */
     public ServerThread(Socket socket, ServerModel model) {
         this.socket = socket;
         this.serverModel = model;
     }
 
+    
     @Override
     public void run() {
         try {
@@ -35,21 +45,26 @@ public class ServerThread implements Runnable {
             this.handleRequestFromClient(input);
             
         } catch (EOFException E) {
-            this.addLogToGUI("Socket closed by client");
+            Utils.addLogToGUI("Socket closed by client", serverModel);
 
         } catch (IOException | ClassNotFoundException e) {
-            this.addLogToGUI("Error in ServerThread", e.getMessage() + " of class: " + e.getClass());
+            Utils.addLogToGUI("Error in ServerThread", e.getMessage() + " of class: " + e.getClass(), serverModel);
             e.printStackTrace();
 
         } finally {
             try {
                 socket.close();
             } catch (IOException e) {
-                this.addLogToGUI("Error in ServerThread on closing socket", e.getMessage());
+                Utils.addLogToGUI("Error in ServerThread on closing socket", e.getMessage(), serverModel);
             }
         }
     }
 
+    /**
+     * This function checks for new emails in server, so that a count of how many 
+     * new messages can be returned to the client.
+     * @param input the data recived from the socket
+     */
     private void checkForNewMail(MailWrapper input){
         String username = input.getUsername();
         ArrayList<Mail> mbTmp = serverModel.getMailBox(username).getInbox();
@@ -65,10 +80,15 @@ public class ServerThread implements Runnable {
         try{ 
             serverOutputStream.writeObject(count);
         }catch(IOException e){
-            addLogToGUI("Connection closed by client", e.getMessage());
+            Utils.addLogToGUI("Connection closed by client", e.getMessage(), serverModel);
         }
     }
 
+    /**
+     * This function is resposable to invoke the correct method wich handles the request from the client
+     * @param input the input from the client wich contains the request and other helpful data
+     * @throws IOException
+     */
     private void handleRequestFromClient(MailWrapper input) throws IOException {
         switch (input.getType()) {
             case Constants.COMMAND_FETCH_INBOX:
@@ -78,26 +98,26 @@ public class ServerThread implements Runnable {
 
             case Constants.COMMAND_FETCH_DELETE:
                 serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getDeleted()));
-                addLogToGUI("Fetched deleted mails for user: ", input.getUsername());
+                Utils.addLogToGUI("Fetched deleted mails for user: ", input.getUsername(), serverModel);
                 break;
 
             case Constants.COMMAND_FETCH_SENT:
                 serverOutputStream.writeObject(new MailWrapper(serverModel.getMailBox(input.getUsername()).getSent()));
-                addLogToGUI("Fetched sent mails for user: ", input.getUsername());
+                Utils.addLogToGUI("Fetched sent mails for user: ", input.getUsername(), serverModel);
                 break;
 
             case Constants.COMMAND_SEND_MAIL:
                 try {
                     sendMail(input.getMailToSend(), input.getUsername());
-                    addLogToGUI("Mail sent from: " + input.getMailToSend().getFrom() + " to: " + input.getMailToSend().getTo(), "Mail sent");
+                    Utils.addLogToGUI("Mail sent from: " + input.getMailToSend().getFrom() + " to: " + input.getMailToSend().getTo(), "Mail sent", serverModel);
                 } catch (IOException e) {
-                    addLogToGUI("Unable to save mailbox to disk", e.getStackTrace().toString());
+                    Utils.addLogToGUI("Unable to save mailbox to disk", e.getStackTrace().toString(), serverModel);
                 }
                 break;
 
             case Constants.COMMAND_DELETE_MAIL:
                 deleteMail(input);
-                addLogToGUI("Mail with id: " + input.getMailToSend().getMailId() + "", "Mail sent");
+                Utils.addLogToGUI("Mail with id: " + input.getMailToSend().getMailId() + "", "Mail sent", serverModel);
                 break;
 
             case Constants.COMMAND_CHECK_NEW_MAIL_PRESENCE :
@@ -108,6 +128,10 @@ public class ServerThread implements Runnable {
         }
     }
 
+    /**
+     * This function is responsable to delete an email
+     * @param input the data from the client 
+     */
     private void deleteMail(MailWrapper input) {
         String username = input.getUsername();
         MailBox mailBox = serverModel.getMailBox(username);
@@ -116,12 +140,21 @@ public class ServerThread implements Runnable {
         mailBox.moveTo(input.getMailToSend(), currentMailBox, Constants.MAILBOX_DELETED_FOLDER);
         try {
             mailBox.saveToDisk();
-            addLogToGUI("Mailbox saved to disk!");
+            Utils.addLogToGUI("Mailbox saved to disk!", serverModel);
         } catch (IOException e) {
-            addLogToGUI("Unable to save mailBox to disk!", e.getStackTrace().toString());
+            Utils.addLogToGUI("Unable to save mailBox to disk!", e.getStackTrace().toString(), serverModel);
         }
     }
 
+    /**
+     * This function is responsable to send an email. it recives an email from a client, and then forwards a copy of the message to 
+     * each of the recipients of the email, by cloning the email. This is done because otherwise, if evry recipients share the same message (as reference),
+     * if one of them deletes the message, it will be deleted for everyone.
+     * This function also reply to the sendere with an email, for evry recipient which cannot be found
+     * @param email the email to be sent
+     * @param senderUsername the user which has sent the email
+     * @throws IOException
+     */
     private void sendMail(Mail email, String senderUsername) throws IOException {
         for (String user : email.getTo()) {
             if (user != "") {
@@ -143,11 +176,15 @@ public class ServerThread implements Runnable {
         serverModel.getMailBox(senderUsername).saveToDisk();
     }
 
+    /**
+     * This function checks for a mailbox, and if the mailbox does not exists, it creates a new one. 
+     * @param username the username to check for a mailbox existance
+     */
     private void checkMailBoxExists(String username) {
         try {
             if (serverModel.getMailBox(username) == null) { // if no mailbox exists for username, then mailbox is
                                                             // generated!
-                this.addLogToGUI("Mailbox " + username + " was not found! Creating a new mailbox!");
+                Utils.addLogToGUI("Mailbox " + username + " was not found! Creating a new mailbox!", serverModel);
                 MailBox tmp = new MailBox(username);
                 tmp.createOutputObjectWriter("./ServerMailBoxes/" + username + ".muppetsmail");
                 ArrayList<String> to = new ArrayList<>();
@@ -157,33 +194,21 @@ public class ServerThread implements Runnable {
                         "Welcome to muppets mail!", Constants.MAILBOX_INBOX_FOLDER);
                 tmp.addMail(welcomeMail, Constants.MAILBOX_INBOX_FOLDER);
                 tmp.saveToDisk();
-                serverModel.addMailBox(tmp); // todo: return an error class to client in case a duplicated exists eve
-                                             // though it should never be fired!
+                serverModel.addMailBox(tmp); 
             }
         } catch (IOException | MailBoxNameDuplicated e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * This function creates the input and ouput streams from the socket
+     * @throws IOException
+     */
     private void createStreams() throws IOException {
         serverInputStream = new ObjectInputStream(socket.getInputStream());
         serverOutputStream = new ObjectOutputStream(socket.getOutputStream());
     }
 
-    private void addLogToGUI(String message) {
-        this.addLogToGUI(message, "");
-    }
-
-    private void addLogToGUI(String message, String detailed) {
-        Platform.runLater(new Runnable() { // done because a new task is require to update model and gui
-            @Override
-            public void run() {
-                serverModel.addLog(message, detailed);
-            }
-        });
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
+    
 }
