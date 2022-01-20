@@ -100,7 +100,7 @@ public class ServerController implements Initializable {
             model.addLog("MailBox folder found!", "Folder is: " + e.getMessage());
         }
 
-        File[] files = new File(mailBoxPath).listFiles((dir, name) -> name.matches("*.muppetsmail")); //list all the mailboxes with a regex
+        File[] files = new File(mailBoxPath).listFiles((dir, name) -> name.endsWith(".muppetsmail")); //list all the mailboxes with a regex
 
         if (files != null) {
             model.addLog("Loading mailboxes from folder");

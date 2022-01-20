@@ -46,14 +46,16 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loginButton.setOnAction(actionEvent -> login() );
+        this.portInput.setText(String.valueOf(Constants.SERVER_PORT));
     }
 
     /**
      * This function checks the connection to be valid. if so, the login view is hidden and the status of the model is changed to logged, 
-     * so that the listener set in the home view controller can populate the listeners and ui items
+     * so that the listener set in the home view controller can populate the listeners and ui items.
+     * it also ckecks that the username ends with @muppetsmail.org
      */
     private void login(){
-        if (!serverInput.getText().equals("") && !portInput.getText().equals("") && !usernameInput.getText().equals("")) {
+        if (!serverInput.getText().equals("") && !portInput.getText().equals("") && !usernameInput.getText().equals("") && usernameInput.getText().endsWith("@muppetsmail.org")) {
             //we create a new connectionManager in the model.
             appModel.connectionManager = new ConnectionManager(serverInput.getText(),Integer.parseInt(portInput.getText()), appModel);
 
@@ -94,6 +96,9 @@ public class LoginController implements Initializable {
             MissingFields += "Enpoint port\n\t";
         if (usernameInput.getText().equals(""))
             MissingFields += "Username\n\t";
+        if(!usernameInput.getText().endsWith("@muppetsmail.org"))
+            MissingFields += "\nUsername is not a \"@muppetsmail.org\" mail valid address!\n";
+        
 
         Utils.showAlert(AlertType.ERROR, "Warning: the following fields are empty:\n\t" + MissingFields + "\nComplete them and retry!", "Connection error", "Error");
 
