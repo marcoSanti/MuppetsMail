@@ -125,7 +125,6 @@ public class ServerController implements Initializable {
             model.addLog("Error in loading mail boxes!", "Mailbox folder was not found!");
             throw new MailBoxNotFoundException("LOG ERROR MESSAGE IN LOADMAILBOXES: mailBox dir not found!");
         }
-        this.startServer();
     }
 
     /**
@@ -137,6 +136,7 @@ public class ServerController implements Initializable {
         listView.setItems(model.getLogEntries());
         try {
             this.loadMailboxes();
+            this.startServer();
 
         } catch (MailBoxNotFoundException e) {
             e.printStackTrace();
